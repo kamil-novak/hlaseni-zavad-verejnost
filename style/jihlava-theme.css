@@ -1,0 +1,639 @@
+/* BARVY */
+:root {
+    --color-one: #CA1517;
+    --color-two: #e7181c;
+    --color-three: #FFFFFF;
+    --color-four: #666666;
+    --color-five: #F2F0F0;
+}
+
+/* OBECNÁ NASTAVENÍ */
+html,
+body,
+#viewDiv {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    width: 100%;
+}
+
+
+/* LOADING SCREEN */
+#loading-screen {
+    position:fixed;
+    width:100%;
+    height:100%;
+    top: 0;
+    left: 0;
+    background: var(--color-one);
+    z-index: 100
+}
+
+#loading-screen .spinner-main {
+    width: 200px;
+    height: 200px;
+    display: inline-block;
+    overflow: hidden;
+    background: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+
+/* HORNÍ LIŠTA */
+#titleDiv {
+    position: absolute;
+    height: 45px;
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+    color: var(--color-four);
+    z-index: 1;
+    background-color: var(--color-three);
+}
+
+#logo {
+    margin-left: 0px;
+    height: 45px;    
+}
+
+#logo-img {
+    height: 45px;
+    width: auto;
+}
+
+#title {
+    font-size: 20px;
+    line-height: 30px;
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.invisible {
+    visibility: collapse;
+}
+
+.esri-expand .esri-expand__content {
+    box-shadow: none;
+}
+
+.esri-view-height-xsmall
+.esri-ui-corner
+.esri-expand
+.esri-legend.esri-widget,
+.esri-view-height-small
+.esri-ui-corner
+.esri-expand
+.esri-legend.esri-widget {
+    max-height: 100%;
+}
+
+
+/* LEGENDA - CUSTOM */
+.esri-legend__layer-caption {
+    display: none;
+}
+
+
+/* INFO WIDGET*/
+.custom-info-widget {
+    line-height: 1.5em;
+}
+
+.custom-info-widget a {
+    color: #425CC7;
+}
+
+.custom-info-widget .custom-icon {
+    padding: 4px;
+    vertical-align: middle;
+    color: #425CC7;
+    margin-left: -3px;
+    margin-top: -3px;
+}
+
+.custom-info-widget h3 {
+    margin-block-start: 0em;
+    color: #425CC7;
+}
+
+.custom-info-widget h4 {
+    margin-block-end: .55em;
+    color: #425CC7;
+}
+
+.custom-info-widget .info-h5 {
+    color: #425CC7;
+}
+
+.custom-info-widget p {
+    margin-block-start: .45em;
+    margin-block-end: .45em;
+}
+
+
+/* LEGEND WIDGET*/
+.custom-legend-widget {
+    line-height: 1.5em;
+}
+
+.custom-legend-widget:last-child {
+    padding-bottom: 2.5em;
+}
+
+.custom-legend-widget h3 {
+    margin-block-start: 0em;
+    color: #425CC7;
+}
+
+.custom-legend-widget h4 {
+    margin-block-end: .55em;
+    color: #425CC7;
+}
+
+.custom-legend-widget img {
+    padding-top: 3px;
+    width: 25px;
+    height: 25px;
+}
+
+.custom-legend-widget td {
+   /*  vertical-align: middle; */
+    padding-right: 7px;
+}
+
+
+/* BOOKMARKS MOST A LITVÍNOV */
+.bookmark-most,
+.bookmark-litvinov {
+    font-family: Arial,sans-serif;
+}
+
+/* Ikona bookmarks ve widgetu O aplikaci */
+.bookmarks-info {
+    display: inline-block; 
+    font-family: Arial, Helvetica, sans-serif; 
+    font-size: 11px; 
+    width: 16px; 
+    height: 24px; 
+    padding: 2px; 
+    line-height: 20px; 
+    text-align: center;
+    color: #425CC7;
+    margin-left: -1px;
+}
+
+
+/* FILTER LINEK WIDGET */
+.filter-container {
+    margin-top: 10px;
+}
+
+.filter-container label input {
+    margin-right:100px;
+}
+ 
+.filter-btn {
+    color: #404040;
+    margin:2px;
+    background-color: white;
+    border: 1px solid rgba(110,110,110,.15);
+    overflow: auto;
+    float: left;
+}
+
+.filter-btn:hover {
+    color: #323232;
+    background-color: #f3f3f3;
+}
+ 
+.filter-btn label {
+    float: left;
+    width: 2em;
+    height: 2em;
+    cursor: pointer;
+}
+ 
+.filter-btn label span {
+    text-align:center;
+    display:block;
+    line-height: 2em;
+}
+ 
+.filter-btn label input {
+    position:absolute;
+    top: -20px;
+    display: none;
+}
+ 
+.filter-btn input:checked + span {
+    background: #eaf1fa;
+    background: linear-gradient(180deg, #eaf1fa 0%, #eaf1fa 90%, #00A340 90%);
+    color: #404040;
+}
+
+.filter-btn input:checked:hover + span {
+    background: #eaf1fa;
+    background: linear-gradient(180deg, #eaf1fa 0%, #eaf1fa 90%, #00A340 90%);
+    color: #323232;
+}
+
+.clear-filter {
+    padding: 5px;
+    margin-top: 10px;
+    clear: both;
+    background-color: #00A340;
+    color: #ffffff;
+}
+
+.clear-filter:hover {
+    cursor: pointer;
+    background-color: #00993d;
+    color: #ffffff;
+}
+
+
+/* MIMOŘÁDNOSTI WIDGET */
+.mimoradnosti-widget-container h3 {
+    margin-block-start: 0em;
+    color: #D73C5A;
+}
+
+.mimoradnosti-widget-container .mimoradnosti-active {
+    box-shadow: 0px -1px 0px 0px #D73C5A,  0px 1px 0px 0px #D73C5A,  1px 1px 0px 0px #D73C5A, 1px -1px 0px 0px #D73C5A;
+}
+
+.mimoradnosti-widget-container .esri-feature__title {
+    margin-bottom: 0px;
+}
+
+.mimoradnosti-widget-container > div {
+    margin-bottom: 15px;
+    cursor: pointer;
+}
+
+.mimoradnosti-widget-container > div:last-child {
+    margin-bottom: 0px;
+}
+
+.mimoradnosti-no-messages {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.mimoradnosti-no-messages calcite-icon {
+    color: #00A340;
+}
+
+
+/* INFORMAČNÍ PANEL */
+.info-banner {
+    box-sizing: border-box;
+    width: 240px;
+    line-height: 1.2rem;
+    opacity: 0.80;
+    font-family: "Avenir Next","Helvetica Neue" ,Helvetica,Arial, sans-serif;
+}
+
+.info-banner.danger {
+    background-color: #FEECF0;
+    color: #D10F35;
+}
+
+.info-banner.warning {
+    background-color: #FFFAEB;
+    color: #946c00;
+}
+
+.info-banner.success {
+    background-color: #EFFAF5;
+    color: #257953;
+}
+
+.info-banner .info-content {
+    padding: 10px;
+}
+
+.info-banner .info-close {
+    padding: 2px 10px;
+    text-align: right
+}
+
+.info-banner .info-close span {
+    cursor: pointer;
+    position: relative;
+    top: 2px;
+    color: white;
+}
+
+.info-banner.danger .info-close {
+    background-color: #D10F35;
+}
+
+.info-banner.warning .info-close {
+    background-color: #946c00;
+}
+
+.info-banner.success .info-close {
+    background-color: #257953;
+}
+
+.info-banner a {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.info-banner.danger a {
+    color: #D10F35;
+}
+
+.info-banner.warning a {
+    color: #946c00;
+}
+
+.info-banner.success a {
+    color: #257953;
+}
+
+
+/* COOKIES LIŠTA */
+.cookies-bar {
+    position: absolute;
+    left: 0px;
+    bottom: 17px;
+    padding: 0 5px;
+    line-height: 16px;
+    font-size: 12px;
+    color: #323232;
+    background-color: rgba(255,255,255,.8);
+}
+
+@keyframes spinner {
+    0% { transform: translate(-50%,-50%) rotate(0deg); }
+    100% { transform: translate(-50%,-50%) rotate(360deg); }
+}
+
+.spinner div {
+    position: absolute;
+    width: 2.5em;
+    height: 2.5em;
+    border: 0.5em solid #ffffff;
+    border-top-color: transparent;
+    border-radius: 50%;
+}
+
+.spinner div {
+    animation: spinner 1s linear infinite;
+    top: 100px;
+    left: 100px
+}
+
+.spinner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform: translateZ(0) scale(1);
+    backface-visibility: hidden;
+    transform-origin: 0 0; /* see note above */
+}
+
+.spinner div { box-sizing: content-box; }
+
+
+/* POP-UP MIMOŘÁDNOSTI */
+/* Nastavení provedeno kvůli bugu 4.27 verze, kdy se zobrazuje v popup zbytečně scrollbar: */
+/* https://community.esri.com/t5/arcgis-javascript-maps-sdk-questions/vertical-scrollbar-in-popup-always-showing/m-p/1304874#M81596 */
+/* V další verzi by mělo být opraveno -> zareagovat v CSS */
+.mimoradnosti-popup-container {
+    line-height: 23px !important;
+    font-size: 14px;
+    padding: 10px;
+    border-left: 5px solid #D73C5A;
+    background-color: #fbeaed;
+}
+
+.mimoradnosti-popup-title {
+    color: #D73C5A;
+}
+
+
+/* POP-UP VOZIDLA */
+/* TODO - přestat vracet v rámci Koopu CSS nastavení, ale pouze CSS třídu */
+.vehicle-popup-title {
+
+}
+
+.vehicle-popup-title span:first-child {
+    position: relative;
+    top: 4px;
+}
+
+.stop-popup-highlighted-item {
+    line-height: 16px !important;
+    display: inline-block;
+    padding-bottom: 1px !important;
+}
+
+
+/* POP-UP ODJEZDY */
+/* Nastavení provedeno kvůli bugu 4.27 verze, kdy se zobrazuje v popup zbytečně scrollbar: */
+/* https://community.esri.com/t5/arcgis-javascript-maps-sdk-questions/vertical-scrollbar-in-popup-always-showing/m-p/1304874#M81596 */
+/* V další verzi by mělo být opraveno -> zareagovat v CSS */
+.odjezdy-popup-container {
+    line-height: 20.2px !important; /* desetinný line-height kvůli scrollbaru na telefonu, na desktopu funguje 20px */
+    font-size: 12px;
+}
+
+.odjezdy-popup-lines-zone {
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(76,76,76,0.1);
+    font-size: 11px;
+    line-height: 14px;
+}
+
+.odjezdy-popup-lines-zone .line {
+    color: white;
+    padding: 3px;
+    margin-right: 1px;
+    background-color: #0046FF;
+    font-weight: 600;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+}
+
+.odjezdy-popup-lines-zone .vehicle-icon {
+    display: inline-block; 
+    height: 20px;
+    width: 20px;
+    margin-right: 1px; 
+    text-indent: -9999px;
+    background-repeat: no-repeat;
+    background-position: 0px 0px;
+    background-size: 20px 20px;
+    font-size: 21px;
+}
+
+.odjezdy-popup-lines-zone .zone {
+    color: white;
+    padding: 3px;
+    background-color: #4DB346;
+    font-weight: 600;
+    display: inline-block;
+    height: 20px;
+    text-align: center;
+}
+
+.odjezdy-popup-lines-zone .icon-bus {
+    background-image: url('https://mapy.mesto-most.cz/app/mhd/images/popup-autobus.png');
+}
+
+.odjezdy-popup-lines-zone .icon-tram {
+    background-image: url('https://mapy.mesto-most.cz/app/mhd/images/popup-tramvaj.png');
+}
+
+.odjezdy-popup-table {
+    color: #323232;
+    border: none;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.odjezdy-popup-table thead {
+    font-weight: 600;
+}
+
+.odjezdy-popup-table td:nth-child(3) {
+    text-align: right;
+}
+
+.odjezdy-popup-table tr td {
+    padding: 0.5em 0.7em;
+    word-break: break-word;
+    vertical-align: top;
+    font-size: 12px;
+}
+
+.odjezdy-popup-table tbody tr td {
+    font-weight: 400;
+}
+
+.odjezdy-popup-table tbody tr:nth-child(odd) {
+    background-color: rgba(76,76,76,0.1);
+}
+
+.odjezdy-popup-table tbody tr:nth-child(even) {
+    background-color:rgba(76, 76, 76, 0.02);
+}
+
+.odjezdy-popup-linkfields {
+    padding-top: 8px;
+    border-top: 1px solid #EDEDED; 
+    color: #6e6e6e;
+    font-size: 12px;
+}
+
+.odjezdy-timer-icon {
+    padding-left: 5px;
+} 
+
+.odjezdy-timer-icon .esri-icon-refresh {
+    position: relative;
+    top: 1px;
+    font-size: 11px !important;
+    color: #6e6e6e;
+    transform: rotate(0deg);
+    /*animation-duration: 4s; */ /* Nastavuje se JavaScriptem v závislosti na hodnotě refresh intervalu popup okna  */
+    animation-name: icon-timer;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+}
+
+.copy-message {
+    background-color: #4DB346;
+    color: white;
+    max-width: 240px;
+    text-align: center;
+    padding: 5px;
+    font-family: Arial, Helvetica, sans-serif;
+    box-sizing: border-box;
+}
+.copy-message a {
+    color: white;
+    text-decoration: underline;
+    margin-top: 5px;
+    display: inline-block;
+}
+  
+@keyframes icon-timer {
+    0% {
+        color: #6e6e6e;
+    }
+    0.5% {
+        color: green;
+        transform: rotate(-1080deg);
+        -webkit-transform: rotate(-1080deg);
+        -moz-transform: rotate(-1080deg);
+        -ms-transform: rotate(-1080deg);
+        -o-transform: rotate(-1080deg);
+}
+    100% {
+        color: #6e6e6e;
+        transform: rotate(0deg);
+        -webkit-transform: rotate(0deg);
+        -moz-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+    }
+}
+
+.track-vehicle-active {
+    animation: 1s blink ease infinite;
+}
+
+@keyframes blink {
+    from, to {
+      opacity: 0;
+    }
+    50% {
+      opacity: 1;
+    }
+}
+
+
+/* ODEBRÁNÍ STÍNU WIDGETŮM V MOBILNÍM ZOBRAZENÍ */
+@media only screen and (max-width: 544px) {
+    .custom-most-theme .esri-expand__content {
+        box-shadow: none !important;
+    }
+}
+
+
+/* ZAKÁZÁNÍ :HOVER NA MOBILNÍCH ZAŘÍZENÍCH */
+@media (hover:none), (hover:on-demand) {
+    .esri-popup__header-container--button:hover {
+        background-color: transparent;
+    }
+    .esri-popup__button:hover {
+        background-color: transparent;
+    }
+}
+
+
+/* ZAKÁZÁNÍ OUTLINE NA RŮZNÝCH MÍSTECH APLIKACE */
+:focus, :focus-within, :focus::after {
+    outline: none !important;
+    outline-offset: 0px !important;
+}

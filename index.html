@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-HGT080TLSL"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXX');
+    </script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>Hlášení závad města Jihlavy</title>
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-status-bar" content="#CA1517"/>
+    <meta name="theme-color" content="#CA1517"/>
+    <!-- Styly -->
+    <link rel="stylesheet" href="https://js.arcgis.com/4.29/esri/themes/light/main.css"/> 
+    <link rel="stylesheet" href="style/jihlava-theme.css"/>
+    <!-- Skripty -->
+    <script src="https://js.arcgis.com/4.29/"></script>
+    <script src="config/default.js"></script>
+    <script src="scripts/rendering.js"></script>
+  </head>
+
+  <body class="custom-most-theme">
+    <!-- Loading screen -->
+    <div id="loading-screen">
+      <div class="spinner-main">
+        <div class="spinner">
+          <div></div>
+      </div>
+      </div>
+    </div>
+    <!-- Horní lišta -->
+    <div id="titleDiv" class="esri-widget">
+      <div id="logo"></div>
+      <div id="title"></div>
+    </div>
+    <!-- Mapa -->
+    <div id="viewDiv"></div>
+  </body>
+  <script src="scripts/app.js"></script>
+</html>

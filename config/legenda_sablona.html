@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="cs">
+	<head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>LEGENDA</title>
+        <link rel="stylesheet" href="https://js.arcgis.com/4.14/esri/themes/light/main.css"/>
+        <link rel="stylesheet" href="../style/custom-style.css"/>
+            
+	</head>
+	<body>
+
+        <!-- KOPÍROVAT ODSUD -->
+        <!-- Projet nástrojem https://codebeautify.org/remove-extra-spaces a vložit jako string do default.js - legendWidget: "" -->
+        <!-- Poznámka: před vložením stringu do default.js nahradit src atributy obrázků legendy takto: "images/obrazek-legendy.svg" -->
+        <div class='custom-legend-widget'>
+            <h3>Legenda</h3>
+            <div class='custom-legend-widget cutom-block-info'>
+                <h4>Zpoždění vozidla MHD</h4>
+                <table>
+                    <tr>
+                        <td><img src='../images/legend-bez-zpozdeni.svg' alt='Bez zpoždění'></td>
+                        <td>Bez zpoždění</td>
+                    </tr>
+                    <tr>
+                        <td>
+                        <img src='../images/legend-zpozdeni-1-minuta.svg' alt='Zpoždění 1 minuta'></td>
+                        <td>Zpoždění 1 minuta</td>
+                    </tr>
+                    <tr>
+                        <td><img src='../images/legend-zpozdeni-2-4-minut.svg' alt='Zpoždění 2-4 minuty'></td>
+                        <td>Zpoždění 2-4 minuty</td>
+                    </tr>
+                    <tr>
+                        <td><img src='../images/legend-zpozdeni-5-minut.svg' alt='Zpoždění 5 minut a více'></td>
+                        <td>Zpoždění 5 minut a více</td>
+                    </tr>
+                </table>
+            </div>
+            <div class='custom-legend-widget cutom-block-info'>
+                <h4>Linka MHD</h4>
+                <table>
+                    <tr>
+                        <td><img src='../images/legend-cislo-linky.svg' alt='Číslo linky'></td>
+                        <td>Číslo linky</td>
+                    </tr>
+                </table>
+            </div>
+            <div class='custom-legend-widget cutom-block-info'>
+                <h4>Stav vozidla MHD</h4>
+                <table>
+                    <tr>
+                        <td><img src='../images/legend-ve-stanici.svg' alt='Ve stanici'></td>
+                        <td>Ve stanici</td>
+                    </tr>
+                    <!--
+                    <tr>
+                        <td>
+                        <img src='../images/legend-cekani.svg' alt='Čekání před jízdou'></td>
+                        <td>Čekání před jízdou</td>
+                    </tr>
+                    -->
+                    <tr>
+                        <td><img src='../images/legend-pohyb.svg' alt='V pohybu'></td>
+                        <td>Jízda mezi zastávkami</td>
+                    </tr>
+                    <tr>
+                        <td><img src='../images/legend-prvni-zastavka.svg' alt='Jízda na 1. zastávku na trase'></td>
+                        <td>Jízda na 1. zastávku na trase</td>
+                    </tr>
+                </table>
+
+            </div>
+            <div class='custom-legend-widget cutom-block-info'>
+                <h4>Zastávky a trasy</h4>
+                <table>
+                    <tr>
+                        <td><img src='../images/legend-zastavka.svg' alt='Zastávka MHD'></td>
+                        <td>Zastávka MHD</td>
+                    </tr>
+                    <tr>
+                        <td><img src='../images/legend-trasa.svg' alt='Trasa linky'></td>
+                        <td>Zastávka MHD</td>
+                    </tr>
+                </table>
+
+            </div>
+        </div>
+        <!-- KOPÍROVAT SEM -->
+
+	</body>
+</html>

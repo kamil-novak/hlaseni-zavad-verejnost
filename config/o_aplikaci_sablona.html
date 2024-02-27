@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="cs">
+	<head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>O APLIKACI</title>
+        <link rel="stylesheet" href="https://js.arcgis.com/4.14/esri/themes/light/main.css"/>
+        <link rel="stylesheet" href="../style/custom-style.css"/>
+            
+	</head>
+	<body>
+
+        <!-- KOPÍROVAT ODSUD -->
+        <!-- Projet nástrojem https://codebeautify.org/remove-extra-spaces a vložit jako string do default.js - infoWidget: "" -->
+        <div class='custom-info-widget'>
+            <h3>Poloha vozidel MHD v Mostě a Litvínově</h3>
+            <div class='custom-info-widget cutom-block-info'>
+                <h4>Obsah mapové aplikace</h4>
+                <p><span class='info-h5'>Aktuální poloha vozidel MHD</span><br> 
+                    Poloha je aktualizována s cca 6s až 10s zpožděním oproti realitě.
+                    Vozidla jsou v mapě barevně odlišena dle jejich aktuálního zpoždění a stavu - více v legendě. V případě pohybu vozidla je zobrazován jeho směr pomocí šipky. Po kliknutí na vozidlo se zobrazí podrobnosti a je vyznačena trasa linky. Pokud má linka více tras, jsou vyznačeny všechny - není zohledněna trasa aktuálně vybraného vozidla. 
+                </p>
+                <p><span class='info-h5'>Zastávky MHD</span><br> 
+                    Po kliknutí na zastávku se zobrazí aktuální zastávkové odjezdy, přehled linek a tarifní pásmo. Zastávkové odjezdy jsou automaticky aktualizovány. 
+                </p>
+                <p> <span class='info-h5'>Trasy linek MHD</span><br> 
+                    Vyznačené trasy jsou doplněny dynamickými popisky linek, které do daného úseku zajíždějí. 
+                </p>
+            </div>
+            <div class='custom-info-widget cutom-block-info'>
+                <h4>Práce s aplikací</h4>
+                <p><span class='esri-icon esri-icon-locate custom-icon'></span> <span class='info-h5'>Najdi moji polohu</span><br> 
+                    Pokud na svém zařízení povolíte přístup k poloze, aplikace zobrazí vaši polohu v mapě. 
+                </p>
+                <p><span class='bookmarks-info'>MO</span> | <span class='bookmarks-info'>LIT</span> <span class='info-h5'>Přiblížit na...</span><br> 
+                    Pomocí nástrojů Přiblížit na Most a Přiblížit na Litvínov lze mapu rychle zoomovat na požadované město. 
+                </p>
+                <p><span class='esri-collapse__icon esri-icon-layer-list custom-icon'></span> <span class='info-h5'>Legenda</span><br> 
+                    Nástroj vysvětluje význam symbolů a jejich barev v mapě. 
+                </p>
+                <p><span class='esri-collapse__icon esri-icon-basemap custom-icon'></span> <span class='info-h5'>Podkladové mapy</span><br> 
+                    Nástroj umožňuje přepnout podkladovou mapu, např. na letecký snímek. 
+                </p> 
+                <p><span class='esri-collapse__icon esri-icon-filter custom-icon'></span> <span class='info-h5'>Filter linek</span><br> 
+                    Nástroj umožňuje zobrazit v mapě vozidla pouze vybraných linek. Ostatní (nevybrané) linky se skyryjí.
+                </p> 
+                <p><span class='esri-icon-search custom-icon'></span> <span class='info-h5'>Hledání</span><br> 
+                    Vyhledávání zastávek MHD, adres a bloků budov (bloky pouze pro město Most). Hledání je po startu aplikace nastaveno na hledání zastávek. Pro hledání adres a bloků budov je nutné nástroj přepnout pomocí šipky dolů. 
+                </p>
+            </div>
+            <div class='custom-info-widget cutom-block-info'>
+                <h4>Data</h4>
+                <p> 
+                    V aplikaci jsou využívána real-time data <a href='http://www.dpmost.cz/' target='_blank'>Dopravního podniku měst Mostu a Litvínova, a.s.</a> Aplikace má pouze informativní charakter a nenahrazuje platné <a href='http://www.dpmost.cz/jizdnirady' target='_blank'>jízdní řády</a>. 
+                </p>
+            </div>
+            <div class='custom-info-widget cutom-block-info'>
+                <h4>Kontakty</h4>
+                <p> 
+                    Statutární město Most, Odbor informačního systému, oddělení GIS (kontakty <a href='https://www.mesto-most.cz/oddeleni-gis/os-1053' target='_blank'>ZDE</a>). 
+                </p>
+            </div>
+        </div>
+        <!-- KOPÍROVAT SEM -->
+
+	</body>
+</html>
