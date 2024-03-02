@@ -7,7 +7,8 @@
     --color-two: #e7181c;
     --color-three: #FFFFFF;
     --color-four: #666666;
-    --color-five: #F2F0F0;
+    --color-five: #D3D3D3;
+    --color-six: #151515;
     /* Others */
     --title-bar-height: 45px
 }
@@ -30,6 +31,9 @@ body,
 }
 .esri-expand .esri-expand__content {
     box-shadow: none;
+}
+.esri-expand__container--expanded {
+    top: 45px !important;
 }
 .esri-view-height-xsmall
 .esri-ui-corner
@@ -153,25 +157,55 @@ body,
     padding-right: 7px;
 }
 
-/* PROBLEMS - MAP */
-.problems-map-add-btn-container {
+/* PROBLEMS - MAP PART */
+/* Button */
+.problems-map-container {
     background-color: var(--color-three);
     padding: 5px;
-    display: flex;
-    justify-content: center;
-    
+    width: 250px;
+    text-align: center;
 }
-.problems-map-add-btn-container.mobile-layout {
+.problems-map-container.mobile-layout {
     padding: 10px;
-    width: 100vw;
+    width: 100%;
     bottom: 0px;
     left: 0px;
+    box-sizing: border-box;
 }
-
-.problems-map-add-btn-container calcite-button {
+.problems-map-container calcite-button {
     --calcite-color-brand: var(--color-one);
     --calcite-color-brand-hover: var(--color-two);
     --calcite-color-brand-press: var(--color-two);
+    margin: auto;
+    width: 250px;
+}
+.problems-map-container.mobile-layout calcite-button {
+    --calcite-color-brand: var(--color-one);
+    --calcite-color-brand-hover: var(--color-two);
+    --calcite-color-brand-press: var(--color-two);
+    width: auto;
+}
+/* Window */
+.problems-map-window {
+    background-color: var(--color-three);
+    margin-bottom: 10px;
+}
+.problems-map-window-header {
+    text-align: right;
+    height: 35px;
+}
+.problems-map-window-body {
+    padding: 30px;
+    border-top: 1px solid var(--color-five);
+    border-bottom: 1px solid var(--color-five);
+}
+.problems-map-window-header calcite-icon {
+    padding: 0px 0px 0px 5px;
+    color: var(--color-four);
+    cursor: pointer;
+}
+.problems-map-window-header calcite-icon:hover {
+    color: var(--color-six);
 }
 
 /* LOADING SPINNER */

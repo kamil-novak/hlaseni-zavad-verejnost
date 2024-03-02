@@ -226,13 +226,46 @@ require([
             group: "top-left"
         });
 
-        // Add problem (Map)
+        // Add problem - map part
+        // Container
+        let addProblemContainer = document.createElement("div");
+        addProblemContainer.classList.add("problems-map-container");
+
         // Button
-        let problemBtnContainer = document.createElement("div");
-        problemBtnContainer.classList.add("problems-map-add-btn-container");
-        problemBtnContainer.innerHTML = `
-          <calcite-button scale="l" icon-start="plus-circle">Nová závada</calcite-button>
-        `
+        let addProblemBtn = document.createElement("calcite-button");
+        addProblemBtn.setAttribute("scale", "l");
+        addProblemBtn.setAttribute("icon-start", "plus-circle");
+        addProblemBtn.innerHTML = "Nová závada";
+        addProblemBtn.addEventListener("click", () => {
+          showAddProblemToMapWindow(addProblemContainer, problemWindowContainer, addProblemBtn)
+        });
+
+        addProblemContainer.append(addProblemBtn);
+
+        // Window
+        let problemWindowContainer = document.createElement("div");
+        problemWindowContainer.classList.add("problems-map-window");
+        
+        let problemWindowHeader = document.createElement("div");
+        problemWindowHeader.classList.add("problems-map-window-header");
+
+        let problemWindowBody = document.createElement("div");
+        problemWindowBody.innerText = "Logika vkládání zádad.";
+        problemWindowBody.classList.add("problems-map-window-body");
+        
+        
+        let problemWindowCloseBtn = document.createElement("calcite-icon");
+        problemWindowCloseBtn.setAttribute("icon", "x");
+        problemWindowCloseBtn.setAttribute("scale", "l");
+        problemWindowCloseBtn.setAttribute("text-label", "Zavřít");
+        problemWindowCloseBtn.addEventListener("click", () => {
+          closeAddProblemToMapWindow(problemWindowContainer, addProblemBtn)
+        });
+        problemWindowHeader.append(problemWindowCloseBtn);
+        
+        problemWindowContainer.append(problemWindowHeader);
+        problemWindowContainer.append(problemWindowBody);
+        
 
         // --- Práce s URL parametry ---
         // Zoom na město (paranetr "m")
@@ -310,7 +343,7 @@ require([
         view.ui.add(basemapWidget, "top-left", 3);
         view.ui.add(infoWidget, "top-left", 4);
         view.ui.add(searchWidget, "top-right", 1);
-        view.ui.add(problemBtnContainer, "bottom-right", 1);
+        view.ui.add(addProblemContainer, "bottom-right", 1);
           
         // LAYERS VISIBILITY
         reactiveUtils.watch(function() { return([map.basemap]) }, 
@@ -346,8 +379,8 @@ require([
               }
 
               // Add problem button
-              problemBtnContainer.classList.add("mobile-layout");
-              view.ui.add(problemBtnContainer, "manual", 1);
+              addProblemContainer.classList.add("mobile-layout");
+              view.ui.add(addProblemContainer, "manual", 1);
               
 
           } 
@@ -363,8 +396,8 @@ require([
               }
 
               // Add problem button
-              problemBtnContainer.classList.remove("mobile-layout");
-              view.ui.add(problemBtnContainer, "bottom-right", 1);
+              addProblemContainer.classList.remove("mobile-layout");
+              view.ui.add(addProblemContainer, "bottom-right", 1);
              }
         }, 
         {
@@ -636,6 +669,20 @@ require([
         }
       }); // END promise
     }
+
+    // FUNCTIONS
+    // Show window for adding problem point to map
+    let showAddProblemToMapWindow = (container, window, btn) => {
+      container.prepend(window);
+      btn.setAttribute("disabled", "")
+    }
+
+    // Close window for adding problem point to map
+    let closeAddProblemToMapWindow = (window, btn) => {
+      window.remove();
+      btn.removeAttribute("disabled")
+    }
+
 
     // --- Funkce ---
     // Resetování intervalu
