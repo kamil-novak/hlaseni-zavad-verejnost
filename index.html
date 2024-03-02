@@ -16,10 +16,12 @@
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-status-bar" content="#CA1517"/>
     <meta name="theme-color" content="#CA1517"/>
-    <!-- Styly -->
+    <!-- Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+    <!-- Styles -->
     <link rel="stylesheet" href="https://js.arcgis.com/4.29/esri/themes/light/main.css"/> 
     <link rel="stylesheet" href="style/jihlava-theme.css"/>
-    <!-- Skripty -->
+    <!-- Scripts -->
     <script src="https://js.arcgis.com/4.29/"></script>
     <script src="config/default.js"></script>
     <script src="scripts/rendering.js"></script>
@@ -34,12 +36,12 @@
       </div>
       </div>
     </div>
-    <!-- Horní lišta -->
-    <div id="titleDiv" class="esri-widget">
-      <div id="logo"></div>
-      <div id="title"></div>
+    <!-- Header bar -->
+    <div id="title-bar" class="esri-widget">
+      <div class="logo-container"></div>
+      <div class="title-container"></div>
     </div>
-    <!-- Mapa -->
+    <!-- Map -->
     <div id="viewDiv"></div>
   </body>
   <script src="scripts/app.js"></script>

@@ -12,18 +12,6 @@ var copyStopLinkAction = {
   image: "./images/popup-copy.svg"
 };  
 
-var zastavkaPopupTemplate =  {
-  outFields: [config.mapServices.linesStopLayer.sublayers.stopLayer.stopIdField,
-              config.mapServices.linesStopLayer.sublayers.stopLayer.postIdField,
-              config.mapServices.linesStopLayer.sublayers.stopLayer.stopNameField,
-              config.mapServices.linesStopLayer.sublayers.stopLayer.typeField,
-              config.mapServices.linesStopLayer.sublayers.stopLayer.typeNameField,
-              config.mapServices.linesStopLayer.sublayers.stopLayer.linesField ,
-              config.mapServices.linesStopLayer.sublayers.stopLayer.directionField,
-              config.mapServices.linesStopLayer.sublayers.stopLayer.zoneField],
-  actions: [copyStopLinkAction],
-};
-
 // Poloha vozidel
 var zoomVehicleAction = {
   title: "Přiblížit vozidlo",
@@ -41,22 +29,12 @@ var trackVehicleAction = {
 var trackVehicleHandler; 
 
 var polohaVozidlaMhdFc;
-var vozidloPopupTemplate = {
-  outFields: [config.mapServices.locationVehiclesLayer.sublayers.vehiclesLayer.delayMinFormatField,
-              config.mapServices.locationVehiclesLayer.sublayers.vehiclesLayer.speedFormatField,
-              config.mapServices.locationVehiclesLayer.sublayers.vehiclesLayer.lastStopNameField,
-              config.mapServices.locationVehiclesLayer.sublayers.vehiclesLayer.barrierField,
-              config.mapServices.locationVehiclesLayer.sublayers.vehiclesLayer.popupTitleField,
-              config.mapServices.locationVehiclesLayer.sublayers.vehiclesLayer.lineField,
-              config.mapServices.locationVehiclesLayer.sublayers.vehiclesLayer.vehicleNumberField], 
-  actions: [zoomVehicleAction, trackVehicleAction],
-  overwriteActions: true,
-};
+
 
 // Mimořádnosti
 var mimoradnostiCache = null;
 
-
+// MODULS ---
 require([
     "esri/WebMap",
     "esri/views/MapView",
@@ -79,635 +57,315 @@ require([
     "esri/widgets/Feature"
    ], function(WebMap, MapView, Popup, reactiveUtils, Expand, Home, Locate, LocalBasemapsSource, TileLayer, Basemap, BasemapGallery, Search, FeatureLayer, GraphicsLayer, Graphic, Point, MapImageLayer, esriRequest, Feature) {
 
+    // APP lAYOUT ---
+    // Header bar
+    document.querySelector(".title-container").innerHTML = config.headerTitle;
+    document.querySelector(".logo-container").innerHTML = 
+      `<a href="${config.headerLink}" target="_blank">
+        <img class="logo-image" src="images/header-logo-jihlava.svg" alt="logo">
+      </a>`;
 
-    // --- Layout aplikace ---
-    // Hlavní lišta
-    document.getElementById("title").innerHTML = config.appSettings.headerTitle;
-    document.getElementById("logo").innerHTML = '<img id="logo-img" src="images/header-logo-jihlava.svg" alt="logo">';
-
-
-    // --- Webová mapa ---
-    
-    // Podkladové mapy
-    // Základní - světlá
-    var zakladniMapa = new Basemap({
+    // WEBMAP ---
+    // Basemaps
+    // Ortofoto
+    const BaseMapDefault = new Basemap({
       baseLayers: [
         new TileLayer({
-          url: "https://mapy.mesto-most.cz/server/rest/services/Podklad/SvetlaZabaged/MapServer",
+          url: "https://gis.jihlava-city.cz/server/rest/services/basemaps/ORP_ortofoto/MapServer",
           opacity: 0.9999,
-          title: "Základní mapa - světlá",
+          title: "Letecká mapa",
+        })
+      ],
+      title: "Letecká mapa",
+      thumbnailUrl: "images/bm-letecka-aktual.png"
+    });
+    // Světlá
+    const BaseMap_1 = new Basemap({
+      baseLayers: [
+        new TileLayer({
+          url: "https://gis.jihlava-city.cz/server/rest/services/basemaps/ORP_zabaged_seda/MapServer",
+          opacity: 0.9999,
+          title: "Základní mapa - světlá"
+        })
+      ],
+      title: "Základní mapa - světlá",
+      thumbnailUrl: "images/bm-zakladni-svetla.png"
+    });
+    // Světlá
+    const BaseMap_2 = new Basemap({
+      baseLayers: [
+        new TileLayer({
+          url: "https://gis.jihlava-city.cz/server/rest/services/basemaps/ORP_zabaged/MapServer",
+          opacity: 0.9999,
+          title: "Základní mapa"
         })
       ],
       title: "Základní mapa",
-      thumbnailUrl: "images/bm-zakladni-mapa.png"
+      thumbnailUrl: "images/bm-zakladni.png"
     });
 
-    // Letecká
-    var leteckaMapa = new Basemap({
-      baseLayers: [
-        new TileLayer({
-          url: "https://mapy.mesto-most.cz/server/rest/services/Ortofoto/Ortofoto2023Cuzk/MapServer",
-          opacity: 0.9999,
-          title: "Letecká mapa 2023",
-        })
-      ],
-      title: "Letecká mapa 2023",
-      thumbnailUrl: "images/bm-letecka2023.png"
-    });
-
-    // Plán města
-    var planMestaMost = new Basemap({
-      baseLayers: [
-        new TileLayer({
-          url: "https://mapy.mesto-most.cz/server/rest/services/Podklad/PlanMesta/MapServer",
-          opacity: 0.40,
-          title: "Plán města Most"
-        })
-      ],
-      title: "Plán města Most",
-      thumbnailUrl: "images/bm-plan-mesta.png"
-    });
-
-    // Operační vrstvy
-    // Popisky linek
-    var linkaPopiskyMs = new MapImageLayer({
-      title: config.mapServices.linesStopLayer.title,
-      url: config.mapServices.linesStopLayer.url,   
-      visibility: true,
-      visibleLayers: [2],
-      sublayers: [
-        {
-          id: 2,
-        },
-      ],
-      opacity: 1,
-      showLegend: false,
-    });
-
-    // Zastávky a linie linek
-    var linkaZastavkaMhdMs = new MapImageLayer({
-      title: config.mapServices.linesStopLayer.title,
-      url: config.mapServices.linesStopLayer.url,
-      visibility: true,
-      visibleLayers: [0,1],
-      opacity: 0.9999,
-      showLegend: false,
-      sublayers: [
-        {
-          id: 1,
-          legendEnabled: true,
-          popupEnabled: false
-        },
-        {
-          id: 0,
-          legendEnabled: true,
-          popupEnabled: true,
-          popupTemplate: zastavkaPopupTemplate,
-        }
-      ]
-    });
-    // Zastávky - sublayer
-    var zastavkaMhdLr = linkaZastavkaMhdMs.findSublayerById(0);
-    zastavkaMhdLr.popupTemplate.content = createStopPopup; 
-    // Linky - sublayer
-    var linkaMhdLr = linkaZastavkaMhdMs.findSublayerById(1);
-
-    // Vozidla
-    polohaVozidlaMhdFc = new FeatureLayer({
-      title: config.mapServices.locationVehiclesLayer.sublayers.vehiclesLayer.title,
-      url: config.mapServices.locationVehiclesLayer.url + "/" + config.mapServices.locationVehiclesLayer.sublayers.vehiclesLayer.layerId,
-      id: "koop_vozidla",
-      visibility: true,
-      opacity: 1,
-      refreshInterval: 0.1,
-      showLabels: true,
-      showLegend: false,
-      legendEnabled: false,
-      popupEnabled: true,
-      labelsVisible: true,
-      renderer: {
-        type: "unique-value",
-        field: "SYMBOLOGY",
-        uniqueValueInfos: vehicleRenderer,
-        visualVariables: [
-          {
-            type: "rotation", 
-            field: config.mapServices.locationVehiclesLayer.sublayers.vehiclesLayer.azimutField, 
-            rotationType: "geographic"
-          }
-        ]
-      },
-      labelingInfo: [vehicleLabel],
-      popupTemplate: vozidloPopupTemplate,
-    });
-    polohaVozidlaMhdFc.popupTemplate.content = createVozidloPopup;
-
-    // Mimořádnosti
-    var mimoradnostiMhdMs = new MapImageLayer({
-      title: config.mapServices.mimoradnostiService.title,
-      url: config.mapServices.mimoradnostiService.url,
-      id: "mimoradnosti",
-      visibility: true,
-      refreshInterval: config.mapServices.mimoradnostiService.refreshInterval,
-      sublayers: [
-        {
-          id: 2,
-          popupEnabled: false,
-          visibility: false,
-          popupTemplate: {
-            content: '<div class="mimoradnosti-popup-container"><div>{TEXT_UDALOSTI}</div><div>'
-          }
-        },
-        {
-          id: 1,
-          popupEnabled: true,
-          popupTemplate: {
-            title: '<div class="mimoradnosti-popup-title">Událost v provozu</div>',
-            content: '<div class="mimoradnosti-popup-container">{TEXT_UDALOSTI}<div>'
-          }
-        },
-        {
-          id: 0,
-          popupEnabled: true,
-          popupTemplate: {
-            title: '<div class="mimoradnosti-popup-title">Událost v provozu</div>', 
-            content: '<div class="mimoradnosti-popup-container">{TEXT_UDALOSTI}<div>'
-          }
-        }
-      ]
+    // Search layers
+    // Base layer
+    const SearchLayerDefault = new FeatureLayer({
+      url: "https://gis.jihlava-city.cz/server/rest/services/ost/ORP_RUIAN/MapServer/0",
+      outFields: ["adresa, adresa_o"]
     })
 
-    // Pomocné vrstvy
-    // Zvýrazňování tras a identifikovaných zastávek
-    var graphicsLayerHighlight = new GraphicsLayer({
-      title: "Zvýraznění trasy linky",
-      opacity: 0.6,
-      legendEnabled: false,
-      popupEnabled: false,
+    // WebMap
+    var map = new WebMap({
+      basemap: BaseMapDefault,
+      portalItem: { 
+        portal: {
+          url: config.portalUrl
+        },
+        id: config.webmapId
+      }
     });
 
-    // Hledání adres
-    var adresyFl = new FeatureLayer({
-      url: config.mapServices.ruianSearchLayer.url + "/" + config.mapServices.ruianSearchLayer.sublayers.adresyLayer.layerId,
-      visible: false,
-    });
-
-    // Hledání bloků
-    var blokyFl = new FeatureLayer({
-      url: config.mapServices.ruianSearchLayer.url + "/" + config.mapServices.ruianSearchLayer.sublayers.blokyLayer.layerId,
-      visible: false,
-    });
-
-    // Hledání zastávek
-    var zastavkaMhdFl = new FeatureLayer({
-      url: config.mapServices.linesStopLayer.url + "/" + config.mapServices.linesStopLayer.sublayers.stopLayer.layerId,
-      popupTemplate: zastavkaPopupTemplate,
-      visible: false,
-    });
-    zastavkaMhdFl.popupTemplate.content = createStopPopup;
-
-    // Webová mapa
-    var webmap = new WebMap({
-      basemap: zakladniMapa,
-      layers: [linkaZastavkaMhdMs, graphicsLayerHighlight, mimoradnostiMhdMs, linkaPopiskyMs, polohaVozidlaMhdFc],
-    });
-
-    // --- View ---
-    // Vytvoření pohledu na webovou mapu
+    // View
     var view = new MapView({
       container: "viewDiv",
-      map: webmap,
-      padding: {
-        top: 55
-      },
+      map,
+      padding: { top: 55 },
       popup: new Popup({
-        dockOptions: {
-          breakpoint: false,
-          position: "bottom-right"
-        },
-        dockEnabled: true,
+        visibleElements: {
+          actionBar: false,
+        }
       }),
       extent: {
-        xmin: -793122.592183364,
-        ymin: -991002.6900442013,
-        xmax: -789635.3768756,
-        ymax: -987740.3710195633,
-        spatialReference: config.webmap.spatialReference
+        xmin: -670774.494788529,
+        ymin: -1131457.7806157435,
+        xmax: -668422.3442508945,
+        ymax: -1128306.586813356,
+        spatialReference: config.webmapSpatialReference
       }
     });
 
-    // --- Layout aplikace ---
-    // Loading screen
-    reactiveUtils.once(
-      function() {return(view.ready === true)})
-        .then(() => {
-          document.getElementById("loading-screen").remove();
-    });
-
+    // Operation layers
+    let OperationalLayer_1 = null; // Závady - view
+    let OperationalLayer_2 = null; // Katastrální území
+    let OperationalLayer_3 = null; // Ulice
     
-    // Pokud je načteno view
-    view.when(function() {
-
-      // --- Widget ---
-      // Tlačítko Home
-      var homeWidget = new Home({
-        view: view,
-        label: "Výchozí zobrazení mapy"
-      });
-
-      // --- Widget ---
-      // Lokalizace
-      var locateWidget = new Locate({
-        view: view,  
-        scale: 2500,
-        label: "Najdi moji polohu",
-      });
-
-      // --- Widget ---
-      // Legenda
-      var legendNode = document.createElement("div");
-      legendNode.style.padding = "10px";
-      legendNode.classList.add("esri-widget--panel", "esri-widget");
-      legendNode.innerHTML = config.appWidgets.legendWidget.content;
-
-      var legendWidget = new Expand({
-        content: legendNode, 
-        view: view,
-        expandTooltip: "Legenda",
-        collapseTooltip: "Sbalit legendu",
-        group: "top-left",
-        expandIcon: "list"
-      });
-
-      // --- Widget ---
-      // O aplikaci
-      var infoNode = document.createElement("div");
-      infoNode.style.padding = "10px";
-      infoNode.classList.add("esri-widget--panel", "esri-widget");
-      infoNode.innerHTML = config.appWidgets.infoWidget.content;
-
-      var infoWidget = new Expand({
-        content: infoNode, 
-        view: view,
-        expandTooltip: "O aplikaci",
-        collapseTooltip: "Sbalit informace o aplikaci",
-        group: "top-left",
-        expandIcon: "question"
-      });
-
-      // --- Widget ---
-      // Basemap Gallery
-      var basemapWidget = new Expand({
-          content: new BasemapGallery({
-              view: view,
-              source: new LocalBasemapsSource({
-                  basemaps: [
-                      zakladniMapa,
-                      leteckaMapa, 
-                      planMestaMost    
-                  ]
-              })
-          }),
-          view: view,
-          expandTooltip: "Podkladové mapy",
-          collapseTooltip: "Sbalit podkladové mapy",
-          group: "top-left"
-      });
-
-      // --- Widget ---
-      // Mimořádnosti
-      var mimoradnostiNode = document.createElement("div");
-      mimoradnostiNode.id = "mimoradnosti-node";
-      mimoradnostiNode.style.padding = "10px";
-      mimoradnostiNode.classList.add("esri-widget--panel", "esri-widget", "mimoradnosti-widget-container");
-      mimoradnostiNode.innerHTML = "<h3>Události v provozu</h3>"
-
-      var mimoradnostiWidget = new Expand({
-        content: mimoradnostiNode,
-        view: view,
-        expandTooltip: "Události v provozu",
-        collapseTooltip: "Sbalit události v provozu",
-        group: "top-left",
-        expandIcon: "speech-bubble-exclamation"
-      });
-
-      checkMhdIssues(mimoradnostiMhdMs, mimoradnostiNode, mimoradnostiWidget, true);
-      mimoradnostiMhdMs.on("refresh", function(){
-        checkMhdIssues(mimoradnostiMhdMs, mimoradnostiNode, mimoradnostiWidget);
-      });
-
-      // --- Widget ---
-      // Filter linek
-      var linesArr = config.appWidgets.filterWidget.linesList;
-      var checkedLines = [];
-
-      // Obsah widgetu
-      var filterNode = document.createElement("div");
-      filterNode.style.padding = "10px";
-      filterNode.classList.add("esri-widget--panel", "esri-widget");
-      filterNode.innerHTML = 'Vyberte linky, které chcete zobrazit v mapě. Ostatní linky se skryjí.<div class="filter-container"></div><div class="clear-filter filter-btn">Zobrazit všechny</div>'
-
-      // Vytvoření widgetu a vložení obsahu
-      var filterWidget = new Expand({
-        content: filterNode, 
-        view: view,
-        expandTooltip: "Filtr linek",
-        collapseTooltip: "Sbalit filtr linek",
-        group: "top-left",
-        expandIcon: "filter"
-      });
-      
-      // Vytažení HTML elementů z obsahu widgetu
-      var filterContainer = filterNode.querySelector(".filter-container");
-      var clearFilter = filterNode.querySelector(".clear-filter");
-
-      // Vložení HTML elementů jednotlivých linek v obsahu widgetu
-      linesArr.forEach(function(line){
-        var lineNode = document.createElement("div");
-        lineNode.classList.add("filter-btn");
-        lineNode.innerHTML = '<label><input type="checkbox" value="1"><span>' + line + '</span></label>'
-
-        filterContainer.append(lineNode);        
-      });
-
-      // Výběr linek (samotný filter)
-      var lineNums = filterContainer.querySelectorAll(".filter-btn span");
-      filterLines(polohaVozidlaMhdFc, lineNums, checkedLines);
-      
-      // Obnovení zobrazení všech linek
-      clearFilterLines(polohaVozidlaMhdFc, clearFilter, lineNums, checkedLines);
-      
-      // --- Widget ---
-      // Záložky Most a Litvínov
-      // URL parametry Most a Litvínov
-
-      // Vytvoření tlačítek Most a Litvínov
-      var bookmarkMost = document.createElement("div");
-      bookmarkMost.classList.add("esri-widget--button", "bookmark-most");
-      bookmarkMost.title = "Přiblížit na Most";
-      bookmarkMost.innerText = "MO";
-
-      var bookmarkLitvinov = document.createElement("div");
-      bookmarkLitvinov.classList.add("esri-widget--button", "bookmark-litvinov");
-      bookmarkLitvinov.title = "Přiblížit na Litvínov";
-      bookmarkLitvinov.innerText = "LIT";
-
-      // Souřadnice pro zoom
-      var ptMost = new Point({
-        x: -791237.224,
-        y: -989622.461,
-        spatialReference: config.webmap.spatialReference
-      });
-
-      var ptLitvinov = new Point({
-        x: -791855.192,
-        y: -978361.715,
-        spatialReference: config.webmap.spatialReference
-      });
-
-      // Měřítko pro zoom
-      var gotoScale = 25000;
-
-      // Zoom po kliknutí na tlačítka
-      bookmarkMost.addEventListener("click", function(){ goToTown(ptMost, gotoScale);});
-      bookmarkLitvinov.addEventListener("click", function(){ goToTown(ptLitvinov, gotoScale);});
-
-      // Informační banner
-      var infoBannerEl = document.createElement("div");
-      infoBannerEl.classList.add("info-banner", config.infoBanner.type);
-
-      var infoBannerContent = document.createElement("div");
-      infoBannerContent.classList.add("info-content");
-      infoBannerContent.innerHTML = config.infoBanner.content;
-
-      infoBannerEl.append(infoBannerContent)
-
-      var infoBannerCloseBtn = document.createElement("div");
-      infoBannerCloseBtn.classList.add("info-close");
-
-      var infoBannerCloseIco = document.createElement("span");
-      infoBannerCloseIco.classList.add("esri-icon-close");
-
-      infoBannerCloseBtn.append(infoBannerCloseIco)
-      infoBannerEl.prepend(infoBannerCloseBtn)
-      infoBannerCloseBtn.addEventListener("click", function(){
-        infoBannerEl.style.display = "none"
-      })
-
-      // Cookies lišta
-      var cookiesBarEl = document.createElement("div");
-      cookiesBarEl.classList.add("cookies-bar");
-      cookiesBarEl.innerHTML = config.cookiesBar.content;
-   
-      // --- Práce s URL parametry ---
-      // Zoom na město (paranetr "m")
-      if (urlTown && !urlStop) {
-        if (urlTown === 'most') {goToTown(ptMost, gotoScale);}
-        if (urlTown === 'litvinov') {goToTown(ptLitvinov, gotoScale);}
-      }
-
-      // Zoom na zastávku (parametr = "stop", hodnota parametru = IdZastavka-SLOUPEK)
-      if (urlStop) {  
-        urlStopArr = urlStop.split('-');
-
-        var queryStop = {
-          outFields: [config.mapServices.linesStopLayer.sublayers.stopLayer.stopIdField,
-                      config.mapServices.linesStopLayer.sublayers.stopLayer.postIdField,
-                      config.mapServices.linesStopLayer.sublayers.stopLayer.stopNameField,
-                      config.mapServices.linesStopLayer.sublayers.stopLayer.typeField,
-                      config.mapServices.linesStopLayer.sublayers.stopLayer.typeNameField,
-                      config.mapServices.linesStopLayer.sublayers.stopLayer.linesField,
-                      config.mapServices.linesStopLayer.sublayers.stopLayer.directionField,
-                      config.mapServices.linesStopLayer.sublayers.stopLayer.zoneField],
-          returnGeometry: true,
-          where: "IdZastavka='" + urlStopArr[0] + "' AND SLOUPEK=" + urlStopArr[1]
-        };
-
-        // Zvýraznění - vložení nové Graphic do graphicLayer
-        zastavkaMhdLr.queryFeatures(queryStop).then(function(result) {
-          if(result.features[0]) {
-            view.popup.open({
-              features: [result.features[0]]
-            });
-            view.goTo({target: result.features[0].geometry, scale: 2500});
-            view.popup.collapsed = false;
-          }
+    // MAIN CODE
+    // After view is loaded    
+    reactiveUtils.once( () => view.ready === true )
+      .then(() => {
+        // Loading screen
+        document.getElementById("loading-screen").remove();
+  
+        // Sublayers
+        map.findLayerById("184c27dff38-layer-7").loadAll().then((layer) => {
+          OperationalLayer_1 = layer.findSublayerById(52); 
         });
-      }
+        OperationalLayer_2 = map.findLayerById("18419807330-layer-5");
+        OperationalLayer_3 = map.findLayerById("183a7fdc2b2-layer-4");
 
-      // --- Layout aplikace ---
-      // Uspořádání prvků
-      view.ui.add(homeWidget, "top-left", 0);
-      view.ui.add(locateWidget, "top-left", 1);
-      view.ui.add(bookmarkMost, "top-left", 2);
-      view.ui.add(bookmarkLitvinov, "top-left", 3);
-      view.ui.add(mimoradnostiWidget, "top-left", 4);
-      view.ui.add(legendWidget, "top-left", 5);
-      view.ui.add(basemapWidget, "top-left", 6);
-      view.ui.add(filterWidget, "top-left", 7);
-      view.ui.add(infoWidget, "top-left", 8);
-          
+        // Widget
+        // Tlačítko Home
+        var homeWidget = new Home({
+          view: view,
+          label: "Výchozí zobrazení mapy"
+        });
 
-      // Pokud je mapa načtena
-      webmap.when(function() {
+        // Widget
+        // Lokalizace
+        var locateWidget = new Locate({
+          view: view,  
+          scale: 2500,
+          label: "Najdi moji polohu",
+        });
+
+        // Widget
+        // Legenda
+        var legendNode = document.createElement("div");
+        legendNode.style.padding = "10px";
+        legendNode.classList.add("esri-widget--panel", "esri-widget");
+        legendNode.innerHTML = config.legendWidgetContent;
+
+        var legendWidget = new Expand({
+          content: legendNode, 
+          view: view,
+          expandTooltip: "Legenda",
+          collapseTooltip: "Sbalit legendu",
+          group: "top-left",
+          expandIcon: "list"
+        });
+
+        // Widget
+        // O aplikaci
+        var infoNode = document.createElement("div");
+        infoNode.style.padding = "10px";
+        infoNode.classList.add("esri-widget--panel", "esri-widget");
+        infoNode.innerHTML = config.infoWidgetContent;
+
+        var infoWidget = new Expand({
+          content: infoNode, 
+          view: view,
+          expandTooltip: "O aplikaci",
+          collapseTooltip: "Sbalit informace o aplikaci",
+          group: "top-left",
+          expandIcon: "question"
+        });
+
+        // Widget
+        // Basemap Gallery
+        var basemapWidget = new Expand({
+            content: new BasemapGallery({
+                view: view,
+                source: new LocalBasemapsSource({
+                    basemaps: [
+                        BaseMapDefault,
+                        BaseMap_1,
+                        BaseMap_2   
+                    ]
+                })
+            }),
+            view: view,
+            expandTooltip: "Podkladové mapy",
+            collapseTooltip: "Sbalit podkladové mapy",
+            group: "top-left"
+        });
+
+        // Add problem (Map)
+        // Button
+        let problemBtnContainer = document.createElement("div");
+        problemBtnContainer.classList.add("problems-map-add-btn-container");
+        problemBtnContainer.innerHTML = `
+          <calcite-button scale="l" icon-start="plus-circle">Nová závada</calcite-button>
+        `
+
+        // --- Práce s URL parametry ---
+        // Zoom na město (paranetr "m")
+        if (urlTown && !urlStop) {
+          if (urlTown === 'most') {goToTown(ptMost, gotoScale);}
+          if (urlTown === 'litvinov') {goToTown(ptLitvinov, gotoScale);}
+        }
+
+        // Zoom na zastávku (parametr = "stop", hodnota parametru = IdZastavka-SLOUPEK)
+        if (urlStop) {  
+          urlStopArr = urlStop.split('-');
+
+          var queryStop = {
+            outFields: [config.mapServices.linesStopLayer.sublayers.stopLayer.stopIdField,
+                        config.mapServices.linesStopLayer.sublayers.stopLayer.postIdField,
+                        config.mapServices.linesStopLayer.sublayers.stopLayer.stopNameField,
+                        config.mapServices.linesStopLayer.sublayers.stopLayer.typeField,
+                        config.mapServices.linesStopLayer.sublayers.stopLayer.typeNameField,
+                        config.mapServices.linesStopLayer.sublayers.stopLayer.linesField,
+                        config.mapServices.linesStopLayer.sublayers.stopLayer.directionField,
+                        config.mapServices.linesStopLayer.sublayers.stopLayer.zoneField],
+            returnGeometry: true,
+            where: "IdZastavka='" + urlStopArr[0] + "' AND SLOUPEK=" + urlStopArr[1]
+          };
+
+          // Zvýraznění - vložení nové Graphic do graphicLayer
+          zastavkaMhdLr.queryFeatures(queryStop).then(function(result) {
+            if(result.features[0]) {
+              view.popup.open({
+                features: [result.features[0]]
+              });
+              view.goTo({target: result.features[0].geometry, scale: 2500});
+              view.popup.collapsed = false;
+            }
+          });
+        }
 
         // --- Widget ---
         // Search
-        var searchWidget = new Search({
-          view: view,
-          allPlaceholder: "zastávky, adresy, ...",
+        var searchWidget = new Search({ 
+          view,
           includeDefaultSources: false,
-          label: "Hledat",
           sources: [
             {
-              layer: zastavkaMhdFl,
-              searchFields: [config.mapServices.linesStopLayer.sublayers.stopLayer.stopNameField],
-              displayField: config.mapServices.linesStopLayer.sublayers.stopLayer.stopNameField,
-              suggestionTemplate: "{" + config.mapServices.linesStopLayer.sublayers.stopLayer.stopNameField + "} <span style='color: #b3b3b3; font-size: 11px'>({" + config.mapServices.linesStopLayer.sublayers.stopLayer.typeNameField + "}, směr {" + config.mapServices.linesStopLayer.sublayers.stopLayer.directionField + "})</span>",
+              layer: SearchLayerDefault,
+              searchFields: ["adresa", "adresa_o"],
+              displayField: "adresa",
               exactMatch: false,
-              outFields: [config.mapServices.linesStopLayer.sublayers.stopLayer.stopIdField,
-                          config.mapServices.linesStopLayer.sublayers.stopLayer.postIdField,
-                          config.mapServices.linesStopLayer.sublayers.stopLayer.stopNameField,
-                          config.mapServices.linesStopLayer.sublayers.stopLayer.typeField,
-                          config.mapServices.linesStopLayer.sublayers.stopLayer.typeNameField,
-                          config.mapServices.linesStopLayer.sublayers.stopLayer.linesField,
-                          config.mapServices.linesStopLayer.sublayers.stopLayer.directionField,
-                          config.mapServices.linesStopLayer.sublayers.stopLayer.zoneField],
-              name: "Zastávka",
-              placeholder: "např. 14.ZŠ",
-              zoomScale: 2500, 
-              maxSuggestions: 10,
-              resultSymbol: {
-                  type: "simple-marker",
-                  style: "square",
-                  color: [0, 255, 255, 0.3],
-                  size: "16px",
-                  outline: {
-                    color: [0, 255, 255],
-                    width: "2.7px"
-                  }
-              }
-            },
-            {
-              layer: adresyFl,
-              searchFields: ["Adresa"],
-              displayField: "Adresa",
-              exactMatch: false,
-              outFields: ["Adresa"],
-              placeholder: "např. Radniční 1/2",
-              name: "Adresa",
-              zoomScale: 2500, // Nefunkční - bug Esri
+              outFields: ["*"],
+              name: "Adresní místa",
+              placeholder: "Hledat adresu",
+              maxResults: 6,
+              maxSuggestions: 6,
+              suggestionsEnabled: true,
               minSuggestCharacters: 3,
-              maxSuggestions: 10,
+              popupEnabled: false,
               resultSymbol: {
                 type: "simple-marker",
-                style: "circle",
-                color: [0, 255, 255, 0.3],
-                size: "16px",
-                outline: {
-                  color: [0, 255, 255],
-                  width: "2.7px"
+                size: "12px",  
+                color: [0, 0, 0, 0],
+                outline: {  
+                  color: [217, 0, 18],
+                  width: 2  
                 }
-              },
-              popupTemplate: {
-                title: "Adresa",
-                content: "{Adresa}"
-              }
-            },
-            {
-              layer: blokyFl,
-              searchFields: ["BLOK"],
-              displayField: "BLOK",
-              exactMatch: false,
-              outFields: ["BLOK"],
-              placeholder: "např. 701",
-              name: "Bloky budov",
-              zoomScale: 2500, 
-              minSuggestCharacters: 1,
-              maxSuggestions: 6,
-              resultSymbol: {
-                type: "simple-fill",
-                style: "solid",
-                color: [0, 255, 255, 0.3],
-                size: "16px",
-                outline: {
-                  color: [0, 255, 255],
-                  width: "2.7px"
-                }
-              },
-              popupTemplate: {
-                title: "Blok",
-                content: "{BLOK}"
               }
             }
           ]
         });
 
+        // --- Layout aplikace ---
+        // Uspořádání prvků
+        view.ui.add(locateWidget, "top-left", 0);
+        view.ui.add(homeWidget, "top-left", 1);
+        view.ui.add(legendWidget, "top-left", 2);
+        view.ui.add(basemapWidget, "top-left", 3);
+        view.ui.add(infoWidget, "top-left", 4);
         view.ui.add(searchWidget, "top-right", 1);
+        view.ui.add(problemBtnContainer, "bottom-right", 1);
+          
+        // LAYERS VISIBILITY
+        reactiveUtils.watch(function() { return([map.basemap]) }, 
+        ([basemap]) => {
+          if (basemap.title === 'Letecká mapa') {
 
-        // --- Informační banner ---
-        // Přidat do aplikace
-        if(config.infoBanner.enable === true) {
-          view.ui.add(infoBannerEl, "top-right", 2)
+            OperationalLayer_2 ? OperationalLayer_2.visible = true : "";
+            OperationalLayer_3 ? OperationalLayer_3.visible = true : "";
+
+          } 
+          else {
+            OperationalLayer_2 ? OperationalLayer_2.visible = false : "";
+            OperationalLayer_3 ? OperationalLayer_3.visible = false : "";
+          }
+        }, 
+        {
+          initial: true
         }
+      ); 
 
-        // --- Cookies lišta ---
-        // Přidat do aplikace
-        if(config.cookiesBar.enable === true) {
-          view.ui.add(cookiesBarEl, "manual")
-        }
-      });
-
-      // --- Layout aplikace ---
+      // ELEMENTS RESIZING AND POSITIONING
       reactiveUtils.watch(function() { return([view.width, view.height]) }, 
-        function([width, height]) {
+        ([width, height]) => {
           if (width < 545) {
-              // Title
-              setTitleMobile(true);
-              
-              // Popup
-              view.popup.dockEnabled = true;
-              view.popup.dockOptions.position = "bottom-center";
-
-              // Legenda widget
+              // Legends widget
               if (height < 1130) { 
                 legendNode.style.maxHeight = "none";
               }
 
-              // Mimořádnosti widget
-              if (height < 1130) {
-                mimoradnostiNode.style.maxHeight = "none";
-              }
-
-              // O aplikaci widget
+              // About widget
               if (height < 1130) {
                 infoNode.style.maxHeight = "none";
               }
 
+              // Add problem button
+              problemBtnContainer.classList.add("mobile-layout");
+              view.ui.add(problemBtnContainer, "manual", 1);
+              
+
           } 
           else {
-              // Title
-              setTitleMobile(false);
-              
-              // Popup
-              view.popup.dockEnabled = true;
-              view.popup.dockOptions.position = "bottom-right";
-
-              // Legenda widget
+              // Legends widget
               if (height <= 1130) {
-                legendNode.style.maxHeight = (height - 405) + "px";
+                legendNode.style.maxHeight = (height - 300) + "px";
               }
 
-              // Mimořádnosti widget
+              // About
               if (height <= 1130) {
-                mimoradnostiNode.style.maxHeight = (height - 365) + "px";
+                infoNode.style.maxHeight = (height - 350) + "px";
               }
 
-              // O aplikaci widget 
-              if (height <= 1130) {
-                infoNode.style.maxHeight = (height - 540) + "px";
-              }
-          }
+              // Add problem button
+              problemBtnContainer.classList.remove("mobile-layout");
+              view.ui.add(problemBtnContainer, "bottom-right", 1);
+             }
         }, 
         {
           initial: true
@@ -717,64 +375,7 @@ require([
     });
 
 
-    // Akce po vybrání (select) mapového prvku
-    view.popup.watch("selectedFeature", function(selectedFeature) {
 
-      if(selectedFeature) {
-
-        // Odebrání rámečku aktivní položky v panelu mimořádností
-        removeActiveMhdIssues();
-
-        // Smazání předchozí grafiky
-        graphicsLayerHighlight.removeAll();
-
-        // --- Zvýraznění trasy po identifikaci vozidla ---
-        if (selectedFeature.layer) {
-          if (selectedFeature.layer.id === "koop_vozidla") {
-
-            // Zjištění čísla linky z headeru pop-up okna
-            var lineNumber = selectedFeature.attributes[config.mapServices.locationVehiclesLayer.sublayers.vehiclesLayer.lineField];
-
-            // Konstrukce atributového dotazu
-            var query = {
-              outFields: [config.mapServices.linesStopLayer.sublayers.linesLayer.lineField],
-              returnGeometry: true,
-              where: config.mapServices.linesStopLayer.sublayers.linesLayer.lineField + " LIKE '%(" + lineNumber + ")%'"
-            };
-
-            // Zvýraznění trasy
-            linkaMhdLr.queryFeatures(query).then(function(result) {
-                addGraphics(result, config.symbologyGraphicLayer.highlightLine);
-            });
-            
-          }
-        }
-
-        // Zvýraznění vybrané zastávky
-        if (selectedFeature.attributes[config.mapServices.linesStopLayer.sublayers.stopLayer.stopIdField]) {
-            // Vypnutí trackování vozidla (ošetření situace listování pop-up okny z trackovaného vozidla na zastávku)
-            if(trackVehicleHandler) {
-              trackVehicleHandler.remove();
-            }
-        }
-      }
-
-      // Smazání grafik po kliknutí do mapy
-      else {
-        graphicsLayerHighlight.removeAll();
-      }
-
-    });
-
-    // Smazání grafik po zavření popup okna
-    view.popup.watch("visible", function(visible) { 
-      if (visible === false) {
-        graphicsLayerHighlight.removeAll();
-        if(trackVehicleHandler) {
-          trackVehicleHandler.remove();
-        }
-      }
-    });
 
     // Akce popup oken
     view.popup.on("trigger-action", function(event) {
@@ -1123,7 +724,7 @@ require([
           top: 0
         }; */
       } else {
-        document.querySelector("#titleDiv").classList.remove("invisible");
+        document.querySelector("#title-bar").classList.remove("invisible");
         view.padding = {
           top: 55
         };
@@ -1188,75 +789,6 @@ require([
         });
       });
       
-    }
-
-    // --- Funkce ---
-    // Kontrola, zda existují mimořádné události
-    function checkMhdIssues(service, node, widget, firstStart=false) {
-
-      var mimoradnostiLr = service.findSublayerById(2);
-      var now = Date.now().toString(); // bug: browser kešuje odpovědi
-      mimoradnostiLr.queryFeatures({where: now + "=" + now, returnGeometry: true, orderByFields: ["ZMENENO DESC"],  outFields: ["ID", "TEXT_UDALOSTI"]}).then(function(data) {
-
-        // Pokud nový request na službu obsahuje stejné výsledky, nepřekresluj HTML element
-        if (JSON.stringify(data.features) === JSON.stringify(mimoradnostiCache)) {
-          mimoradnostiCache = data.features;
-        }
-        // Pokud nový request na službu obsahuje jiné výsledky, překresli HTML element
-        else {
-          var messagesCount = data.features.length;
-
-          if (messagesCount > 0) {
-            node.innerHTML = "<h3>Události v provozu</h3>";
-            node.querySelector("h3").append(" (" + messagesCount + ")");
-
-            if (window.innerWidth >= 545) {
-              if (firstStart === true) {
-                widget.expand();
-              }
-            }
-
-            data.features.forEach(function(feature, index){
-              
-              var mimoradnostFeature = new Feature({
-                id: "udalost-" + feature.attributes.ID,
-                container: node.id,
-                graphic: feature,
-                map: view.map,
-                spatialReference: view.spatialReference
-              });
-
-              mimoradnostFeature.when(function(){
-                mimoradnostFeature.container.childNodes[index+1].addEventListener("click", function(e){
-                  removeActiveMhdIssues();
-                  this.classList.add("mimoradnosti-active");
-                  view.goTo({
-                    target: mimoradnostFeature.graphic,
-                    zoom: 5
-                  })
-                });
-              });
-  
-            })
-          }
-          else {
-            node.innerHTML = '<h3>Události v provozu</h3><div class="mimoradnosti-no-messages"><calcite-icon icon="check-circle-f" scale="m"></calcite-icon><div>Nejsou hlášeny žádné události v provozu.</div></div>';
-          }
-
-          widget.iconNumber = messagesCount;
-          mimoradnostiCache = data.features;
-        }
-        
-      })
-    }
-
-    // --- Funkce ---
-    // Odebrání rámečku aktivní položky v panelu mimořádných události
-    function removeActiveMhdIssues() {
-      var nodes = document.querySelectorAll(".mimoradnosti-widget-container .mimoradnosti-active");
-      nodes.forEach(function(node) {
-        node.classList.remove("mimoradnosti-active")
-      });
     }
 
 });
