@@ -159,7 +159,7 @@ body,
 .problems-map-container {
     background-color: var(--color-three);
     padding: 5px;
-    width: 250px;
+    width: 260px;
     text-align: center;
 }
 .problems-map-container.mobile-layout {
@@ -174,19 +174,18 @@ body,
     --calcite-color-brand-hover: var(--color-two);
     --calcite-color-brand-press: var(--color-two);
     margin: auto;
-    width: 250px;
+    width: 100%;
 }
 .problems-map-container.mobile-layout calcite-button {
     --calcite-color-brand: var(--color-one);
     --calcite-color-brand-hover: var(--color-two);
     --calcite-color-brand-press: var(--color-two);
-    width: auto;
 }
 /* Window */
 .problems-map-window {
     background-color: var(--color-three);
-    margin-bottom: 10px;
     font-family: var(--font-one);
+    padding: 0px 5px 5px 5px;
 }
 .problems-map-window-header {
     text-align: right;
@@ -197,9 +196,14 @@ body,
     align-items: center;
 }
 .problems-map-window-body {
-    padding: 20px 0px;
+    color: var(--color-six);
     border-top: 1px solid var(--color-five);
-    border-bottom: 1px solid var(--color-five);
+    padding-top: 5px;
+}
+.problems-map-message {
+    display: flex;
+    align-items: center;
+    gap: 3px;
 }
 .problems-map-window-header calcite-icon {
     padding: 0px 0px 0px 5px;
@@ -207,11 +211,23 @@ body,
     cursor: pointer;
 }
 .problems-map-window-header calcite-button {
-    width: 165px;
+    width: 140px;
     margin: 0px;
 }
 .problems-map-window-header calcite-icon:hover {
     color: var(--color-six);
+}
+.problems-map-check-icon {
+    --calcite-ui-icon-color: green;
+}
+.problems-map-action-bar {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    padding-top: 5px;
+}
+.problems-map-action-bar calcite-button {
+    margin: 0px;
 }
 
 /* LOADING SPINNER */

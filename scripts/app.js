@@ -23,6 +23,9 @@ require([
     "esri/widgets/Sketch/SketchViewModel"
    ], function(WebMap, MapView, Popup, reactiveUtils, Expand, Home, Locate, LocateVM, LocalBasemapsSource, TileLayer, Basemap, BasemapGallery, Search, FeatureLayer, GraphicsLayer, Graphic, Point, MapImageLayer, esriRequest, Feature, SketchViewModel) {
 
+    // GLOBAL VARIABLES ---
+    let sketchViewModel = null;
+
     // APP lAYOUT ---
     // Header bar
     document.querySelector(".title-container").innerHTML = config.headerTitle;
@@ -114,6 +117,10 @@ require([
     let OperationalLayer_1 = null; // Závady - view
     let OperationalLayer_2 = null; // Katastrální území
     let OperationalLayer_3 = null; // Ulice
+
+    // Messages
+    const messageSelectPlace = `<div class="problems-map-message"><calcite-icon icon="pin-tear-f"></calcite-icon> Nyní vyberte místo závady v mapě.</div>`
+    const messageSelectPlaceSuccess = `<div class="problems-map-message"><calcite-icon class="problems-map-check-icon" icon="check"></calcite-icon> Místo závady úspěšně vybráno.</div>`
     
     // MAIN CODE
     // After view is loaded    
@@ -210,8 +217,9 @@ require([
         let addProblemBtn = document.createElement("calcite-button");
         addProblemBtn.setAttribute("scale", "l");
         addProblemBtn.setAttribute("icon-start", "plus-circle");
+        // addProblemBtn.setAttribute("disabled", "");
         addProblemBtn.innerHTML = "Nahlásit novou závadu";
-        
+          
         addProblemContainer.append(addProblemBtn);
 
         // Window
@@ -222,9 +230,7 @@ require([
         problemWindowHeader.classList.add("problems-map-window-header");
 
         let problemWindowBody = document.createElement("div");
-        problemWindowBody.innerHTML = `
-          Nyní označte místo závady v mapě.
-        `;
+        problemWindowBody.innerHTML = messageSelectPlace;
         problemWindowBody.classList.add("problems-map-window-body");
 
         // Locate  
@@ -234,7 +240,6 @@ require([
         problemWindowLocateBtn.setAttribute("appearance", "solid");
         problemWindowLocateBtn.setAttribute("title", "Získat vaší polohu");
         problemWindowLocateBtn.setAttribute("kind", "neutral");
-        problemWindowLocateBtn.setAttribute("round", "");
         problemWindowLocateBtn.innerText = "Získat vaší polohu";
         problemWindowLocateBtn.addEventListener("click", () => {
           problemWindowLocateBtn.setAttribute("disabled", "");
@@ -251,17 +256,45 @@ require([
         problemWindowCloseBtn.setAttribute("title", "Zavřít");
         problemWindowCloseBtn.setAttribute("text-label", "Zavřít");
         problemWindowCloseBtn.addEventListener("click", () => {
-          closeAddProblemToMapWindow(problemWindowContainer, addProblemBtn)
+          closeAddProblemToMapWindow(problemWindowContainer, addProblemBtn, problemWindowBody)
         });
         problemWindowHeader.append(problemWindowCloseBtn);
         
         problemWindowContainer.append(problemWindowHeader);
         problemWindowContainer.append(problemWindowBody);
+
+        // Action bar
+        let problemActionBar = document.createElement("div");
+        problemActionBar.classList.add("problems-map-action-bar");
+ 
+        let newAddProblemBtn = document.createElement("calcite-button");
+        newAddProblemBtn.setAttribute("icon-start", "refresh");
+        newAddProblemBtn.setAttribute("scale", "s");
+        newAddProblemBtn.setAttribute("appearance", "solid");
+        newAddProblemBtn.setAttribute("title", "Změnit místo");
+        newAddProblemBtn.setAttribute("kind", "neutral");
+        newAddProblemBtn.innerText = "Změnit místo";
+        newAddProblemBtn.addEventListener("click", () => {
+          console.log("Změnit místo");
+        });
+        problemActionBar.append(newAddProblemBtn);
+
+        let goToFormBtn = document.createElement("calcite-button");
+        goToFormBtn.setAttribute("icon-start", "caret-right");
+        goToFormBtn.setAttribute("scale", "m");
+        goToFormBtn.setAttribute("appearance", "solid");
+        goToFormBtn.setAttribute("title", "Pokračovat");
+        goToFormBtn.innerText = "Pokračovat";
+        goToFormBtn.addEventListener("click", () => {
+          console.log("Pokračovat");
+        });
+        problemActionBar.append(goToFormBtn);
+
         
         // Business
         addProblemBtn.addEventListener("click", () => {
           showAddProblemToMapWindow(addProblemContainer, problemWindowContainer, addProblemBtn);
-          activeSketchingToMap(problemWindowBody);
+          activeSketchingToMap(problemWindowBody, problemActionBar);
         });
        
 
@@ -373,23 +406,25 @@ require([
     // Show window for adding problem point to map
     let showAddProblemToMapWindow = (container, window, btn) => {
       container.prepend(window);
-      btn.setAttribute("disabled", "")
+      btn.style.display = "none";
     }
 
     // Close window for adding problem point to map
-    let closeAddProblemToMapWindow = (window, btn) => {
-      window.remove();
-      btn.removeAttribute("disabled");
-      sketchLayer.graphics.removeAll();
+    let closeAddProblemToMapWindow = (window, btn, info) => {
+      window.remove(); // Remove window for adding point
+      btn.style.display = "flex"; // Enable create button
+      info.innerHTML = messageSelectPlace; // Reset window message to initial state
+      sketchLayer.graphics.removeAll(); // Remove graphic from map
+      if (sketchViewModel) { sketchViewModel.cancel(); } // Reset sketchViewModel
     }
 
     // Active sketching point problem in map
-    let activeSketchingToMap = (info) => {
+    let activeSketchingToMap = (info, actionBar) => {
 
       view.map.add(sketchLayer);
 
       // Define sketch symbol 
-      const sketchSymbol = {
+      sketchSymbol = {
         type: "simple-marker",
         style: "circle",
         size: 10,
@@ -401,7 +436,7 @@ require([
       }
 
       // Create model
-      const sketchViewModel = new SketchViewModel({
+      sketchViewModel = new SketchViewModel({
         view,
         layer: sketchLayer,
         pointSymbol: sketchSymbol,
@@ -414,11 +449,12 @@ require([
       // Events
       sketchViewModel.on("create", function(event) {
         console.log("bod závady vložen");
-        info.innerHTML = "dsdhshd"
+        info.innerHTML = messageSelectPlaceSuccess;
+
+        info.append(actionBar);
       });
       sketchViewModel.on("update", function(event) {
         console.log("bod závady přesunut");
-        info.innerHTML = "dsdhshd"
       });
     }
 });
