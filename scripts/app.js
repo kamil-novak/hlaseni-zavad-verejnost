@@ -7,6 +7,7 @@ require([
     "esri/widgets/Expand",
     "esri/widgets/Home",
     "esri/widgets/Locate",
+    "esri/widgets/Locate/LocateViewModel",
     "esri/widgets/BasemapGallery/support/LocalBasemapsSource",
     "esri/layers/TileLayer",
     "esri/Basemap",
@@ -18,8 +19,9 @@ require([
     "esri/geometry/Point",
     "esri/layers/MapImageLayer",
     "esri/request",
-    "esri/widgets/Feature"
-   ], function(WebMap, MapView, Popup, reactiveUtils, Expand, Home, Locate, LocalBasemapsSource, TileLayer, Basemap, BasemapGallery, Search, FeatureLayer, GraphicsLayer, Graphic, Point, MapImageLayer, esriRequest, Feature) {
+    "esri/widgets/Feature",
+    "esri/widgets/Sketch/SketchViewModel"
+   ], function(WebMap, MapView, Popup, reactiveUtils, Expand, Home, Locate, LocateVM, LocalBasemapsSource, TileLayer, Basemap, BasemapGallery, Search, FeatureLayer, GraphicsLayer, Graphic, Point, MapImageLayer, esriRequest, Feature, SketchViewModel) {
 
     // APP lAYOUT ---
     // Header bar
@@ -105,6 +107,9 @@ require([
       }
     });
 
+    // Sketching layer
+    const sketchLayer = new GraphicsLayer();
+  
     // Operation layers
     let OperationalLayer_1 = null; // Závady - view
     let OperationalLayer_2 = null; // Katastrální území
@@ -140,6 +145,9 @@ require([
           view: view,  
           scale: 2500,
           label: "Najdi moji polohu",
+        });
+        let locateVM = new LocateVM({
+          view
         });
 
         // Widget
@@ -202,11 +210,8 @@ require([
         let addProblemBtn = document.createElement("calcite-button");
         addProblemBtn.setAttribute("scale", "l");
         addProblemBtn.setAttribute("icon-start", "plus-circle");
-        addProblemBtn.innerHTML = "Nová závada";
-        addProblemBtn.addEventListener("click", () => {
-          showAddProblemToMapWindow(addProblemContainer, problemWindowContainer, addProblemBtn)
-        });
-
+        addProblemBtn.innerHTML = "Nahlásit novou závadu";
+        
         addProblemContainer.append(addProblemBtn);
 
         // Window
@@ -217,12 +222,33 @@ require([
         problemWindowHeader.classList.add("problems-map-window-header");
 
         let problemWindowBody = document.createElement("div");
-        problemWindowBody.innerText = "Logika vkládání zádad.";
+        problemWindowBody.innerHTML = `
+          Nyní označte místo závady v mapě.
+        `;
         problemWindowBody.classList.add("problems-map-window-body");
-                
+
+        // Locate  
+        let problemWindowLocateBtn = document.createElement("calcite-button");
+        problemWindowLocateBtn.setAttribute("icon-start", "gps-off");
+        problemWindowLocateBtn.setAttribute("scale", "s");
+        problemWindowLocateBtn.setAttribute("appearance", "solid");
+        problemWindowLocateBtn.setAttribute("title", "Získat vaší polohu");
+        problemWindowLocateBtn.setAttribute("kind", "neutral");
+        problemWindowLocateBtn.setAttribute("round", "");
+        problemWindowLocateBtn.innerText = "Získat vaší polohu";
+        problemWindowLocateBtn.addEventListener("click", () => {
+          problemWindowLocateBtn.setAttribute("disabled", "");
+          locateVM.locate().then(() => {
+            problemWindowLocateBtn.removeAttribute("disabled");
+          });
+        });
+        problemWindowHeader.append(problemWindowLocateBtn);
+          
+        // Close button
         let problemWindowCloseBtn = document.createElement("calcite-icon");
         problemWindowCloseBtn.setAttribute("icon", "x");
         problemWindowCloseBtn.setAttribute("scale", "l");
+        problemWindowCloseBtn.setAttribute("title", "Zavřít");
         problemWindowCloseBtn.setAttribute("text-label", "Zavřít");
         problemWindowCloseBtn.addEventListener("click", () => {
           closeAddProblemToMapWindow(problemWindowContainer, addProblemBtn)
@@ -232,7 +258,11 @@ require([
         problemWindowContainer.append(problemWindowHeader);
         problemWindowContainer.append(problemWindowBody);
         
-
+        // Business
+        addProblemBtn.addEventListener("click", () => {
+          showAddProblemToMapWindow(addProblemContainer, problemWindowContainer, addProblemBtn);
+          activeSketchingToMap(problemWindowBody);
+        });
        
 
         // --- Widget ---
@@ -349,6 +379,46 @@ require([
     // Close window for adding problem point to map
     let closeAddProblemToMapWindow = (window, btn) => {
       window.remove();
-      btn.removeAttribute("disabled")
+      btn.removeAttribute("disabled");
+      sketchLayer.graphics.removeAll();
+    }
+
+    // Active sketching point problem in map
+    let activeSketchingToMap = (info) => {
+
+      view.map.add(sketchLayer);
+
+      // Define sketch symbol 
+      const sketchSymbol = {
+        type: "simple-marker",
+        style: "circle",
+        size: 10,
+        color: "#00F700",
+        outline: {
+          color: "#ffffff",
+          width: 1.5
+        }
+      }
+
+      // Create model
+      const sketchViewModel = new SketchViewModel({
+        view,
+        layer: sketchLayer,
+        pointSymbol: sketchSymbol,
+        defaultUpdateOptions: {highlightOptions: {enabled: false}}
+      });
+
+      // Initialize sketching
+      sketchViewModel.create("point");
+
+      // Events
+      sketchViewModel.on("create", function(event) {
+        console.log("bod závady vložen");
+        info.innerHTML = "dsdhshd"
+      });
+      sketchViewModel.on("update", function(event) {
+        console.log("bod závady přesunut");
+        info.innerHTML = "dsdhshd"
+      });
     }
 });

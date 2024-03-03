@@ -186,13 +186,18 @@ body,
 .problems-map-window {
     background-color: var(--color-three);
     margin-bottom: 10px;
+    font-family: var(--font-one);
 }
 .problems-map-window-header {
     text-align: right;
     height: 35px;
+    padding-bottom: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 .problems-map-window-body {
-    padding: 30px;
+    padding: 20px 0px;
     border-top: 1px solid var(--color-five);
     border-bottom: 1px solid var(--color-five);
 }
@@ -200,6 +205,10 @@ body,
     padding: 0px 0px 0px 5px;
     color: var(--color-four);
     cursor: pointer;
+}
+.problems-map-window-header calcite-button {
+    width: 165px;
+    margin: 0px;
 }
 .problems-map-window-header calcite-icon:hover {
     color: var(--color-six);

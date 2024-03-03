@@ -22,7 +22,7 @@ var config = {
     portalUrl: "https://gis.jihlava-city.cz/portal",
 
     // Obsah widgetu legenda (HTML)
-    legendWidgetContent: "<div class='custom-legend-widget'> <h3>Legenda</h3> <div class='custom-legend-widget cutom-block-info'><h4>Závady</h4><table><tr><td><img src='images/legend-zavady-aktualni.svg' alt='Bez zpoždění'></td> <td>Aktuální závady</td></tr></table></div></div>",
+    legendWidgetContent: "<div class='custom-legend-widget'> <h3>Legenda</h3> <div class='custom-legend-widget cutom-block-info'><h4>Závady</h4><table><tr><td><img src='images/legend-zavady-aktualni.svg' alt='Aktuální závady'></td> <td>Aktuální závady</td></tr><tr><td><img src='images/legend-zavady-new.svg' alt='Nové hlášení'></td> <td>Nové hlášení</td></tr></table></div></div>",
    
     // Obsah widgetu o aplikaci (HTML)
     infoWidgetContent: "<div class='about-widget'><h3>Hlášení závad ve městě</h3><div><h4>Obsah mapové aplikace</h4> <p><span class='info-h5'>Lorem ipsum reprehenderit non officia nulla elit id. Officia laboris ipsum deserunt nostrud consequat incididunt qui tempor cillum veniam exercitation consectetur veniam. Reprehenderit elit laboris eiusmod nostrud commodo aliquip ipsum irure laborum qui reprehenderit id. Sint Lorem velit sunt cupidatat ipsum quis quis consectetur Lorem deserunt deserunt proident nulla esse.</p></div></div>",
