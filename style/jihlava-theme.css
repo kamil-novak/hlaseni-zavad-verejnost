@@ -32,9 +32,6 @@ body,
 .esri-expand .esri-expand__content {
     box-shadow: none;
 }
-.esri-expand__container--expanded {
-    top: 45px !important;
-}
 .esri-view-height-xsmall
 .esri-ui-corner
 .esri-expand
@@ -245,6 +242,10 @@ body,
     /* Format title text */
     #title-bar .title-container {
         font-size: 15px;
+    }
+    /* Move widget panel down */
+    .esri-expand__container.esri-expand__container--expanded {
+        top: 45px !important;
     }
 }
 /* Zakázání :hove na mobilních zařízeních */
