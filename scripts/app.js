@@ -158,7 +158,10 @@ require([
           OperationalLayer_1 = layer.findSublayerById(52); 
         });
         OperationalLayer_2 = map.findLayerById("18419807330-layer-5");
-        OperationalLayer_3 = map.findLayerById("183a7fdc2b2-layer-4");
+        // OperationalLayer_3 = map.findLayerById("183a7fdc2b2-layer-4"); // Uilce jako samostatná vrstva - pomalé
+        map.findLayerById("18e02e538d9-layer-7").loadAll().then((layer) => {
+          OperationalLayer_3 = layer.findSublayerById(3); 
+        });
 
         // Widget
         // Tlačítko Home
