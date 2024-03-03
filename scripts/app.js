@@ -275,7 +275,8 @@ require([
         newAddProblemBtn.setAttribute("kind", "neutral");
         newAddProblemBtn.innerText = "Změnit místo";
         newAddProblemBtn.addEventListener("click", () => {
-          console.log("Změnit místo");
+          resetSketchViewModel(problemWindowBody);
+          activeSketchingToMap(problemWindowBody, problemActionBar);
         });
         problemActionBar.append(newAddProblemBtn);
 
@@ -413,6 +414,11 @@ require([
     let closeAddProblemToMapWindow = (window, btn, info) => {
       window.remove(); // Remove window for adding point
       btn.style.display = "flex"; // Enable create button
+      resetSketchViewModel(info);
+    }
+
+    // Reset sketch view model
+    let resetSketchViewModel = (info) => {
       info.innerHTML = messageSelectPlace; // Reset window message to initial state
       sketchLayer.graphics.removeAll(); // Remove graphic from map
       if (sketchViewModel) { sketchViewModel.cancel(); } // Reset sketchViewModel
@@ -448,10 +454,10 @@ require([
 
       // Events
       sketchViewModel.on("create", function(event) {
-        console.log("bod závady vložen");
-        info.innerHTML = messageSelectPlaceSuccess;
-
-        info.append(actionBar);
+        if(event.state === "complete") {
+          info.innerHTML = messageSelectPlaceSuccess;
+          info.append(actionBar);
+        }
       });
       sketchViewModel.on("update", function(event) {
         console.log("bod závady přesunut");
