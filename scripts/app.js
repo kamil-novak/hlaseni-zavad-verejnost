@@ -139,6 +139,9 @@ require([
           OperationalLayer_3 = layer.findSublayerById(3); 
         });
 
+        // Sketching layer
+        view.map.add(sketchLayer);
+
         // Widget
         // Tlačítko Home
         var homeWidget = new Home({
@@ -426,9 +429,6 @@ require([
 
     // Active sketching point problem in map
     let activeSketchingToMap = (info, actionBar) => {
-
-      view.map.add(sketchLayer);
-
       // Define sketch symbol 
       sketchSymbol = {
         type: "simple-marker",
