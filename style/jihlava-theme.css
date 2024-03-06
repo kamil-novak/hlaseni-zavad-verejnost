@@ -194,13 +194,21 @@ body,
     display: flex;
     justify-content: space-between;
     align-items: center;
+    color: var(--color-four);
 }
 .problems-map-window-body {
     color: var(--color-six);
     border-top: 1px solid var(--color-five);
     padding-top: 10px;
 }
-.problems-map-message {
+.problems-map-message-select {
+    text-align: left;
+}
+.problems-map-message-select > div:last-child {
+    margin-top: 10px;
+    color: var(--color-four);
+}
+.problems-map-message-selected {
     display: flex;
     align-items: center;
     gap: 3px;

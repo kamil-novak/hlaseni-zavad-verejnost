@@ -113,8 +113,29 @@ require([
       }
     });
 
-    // Sketching layer
+    // Sketching layer and model
     const sketchLayer = new GraphicsLayer();
+
+    const sketchSymbol = {
+      type: "simple-marker",
+      style: "circle",
+      size: 15,
+      color: "#00F700",
+      outline: {
+        color: "#ffffff",
+        width: 1.5
+      }
+    }
+    
+    const sketchViewModelOptions = {
+      view,
+      layer: sketchLayer,
+      pointSymbol: sketchSymbol,
+      defaultUpdateOptions: {highlightOptions: {enabled: false}}
+    };
+    
+    // Locate layer
+    const locateLayer = new GraphicsLayer();
   
     // Operation layers
     let OperationalLayer_1 = null; // Závady - view
@@ -122,8 +143,8 @@ require([
     let OperationalLayer_3 = null; // Ulice
 
     // Messages
-    const messageSelectPlace = `<div class="problems-map-message"><calcite-icon icon="pin-tear-f"></calcite-icon> Nyní vyberte místo závady v mapě.</div>`
-    const messageSelectPlaceSuccess = `<div class="problems-map-message"><calcite-icon class="problems-map-check-icon" icon="check"></calcite-icon> Místo závady úspěšně vybráno.</div>`
+    const messageSelectPlace = `<div class="problems-map-message-select"><div>Kliknutím vyberte místo závady v mapě.</div> <div>Místo závady je možné vybrat také automaticky na základě vaší aktuální polohy kliknutím zde: </div></div>`
+    const messageSelectPlaceSuccess = `<div class="problems-map-message-selected"><calcite-icon class="problems-map-check-icon" icon="check"></calcite-icon> Místo závady úspěšně vybráno.</div>`
     
     // MAIN CODE
     // After view is loaded    
@@ -142,10 +163,12 @@ require([
           OperationalLayer_3 = layer.findSublayerById(3); 
         });
 
+        // Locate layer
+        view.map.add(locateLayer);
+
         // Sketching layer
         view.map.add(sketchLayer);
-        map.reorder(sketchLayer, 0);
-
+        
         // Widget
         // Tlačítko Home
         var homeWidget = new Home({
@@ -216,33 +239,25 @@ require([
           
         addProblemContainer.append(addProblemBtn);
 
-        // Window
+        // Window container
         let problemWindowContainer = document.createElement("div");
         problemWindowContainer.classList.add("problems-map-window");
         
+        // Window header
         let problemWindowHeader = document.createElement("div");
         problemWindowHeader.classList.add("problems-map-window-header");
 
-        let problemWindowBody = document.createElement("div");
-        problemWindowBody.innerHTML = messageSelectPlace;
-        problemWindowBody.classList.add("problems-map-window-body");
+        // Window title
+        let problemWindowTitle = document.createElement("div");
+        problemWindowTitle.innerText = "Místo závady";
+        problemWindowTitle.classList.add("problems-map-window-title");
+        problemWindowHeader.append(problemWindowTitle);
 
         // Locate  
-        let problemWindowLocateBtn = document.createElement("calcite-button");
+        let problemWindowLocateBtn = document.createElement("calcite-link");
         problemWindowLocateBtn.setAttribute("icon-start", "gps-off");
-        problemWindowLocateBtn.setAttribute("scale", "s");
-        problemWindowLocateBtn.setAttribute("appearance", "solid");
-        problemWindowLocateBtn.setAttribute("title", "Získat vaší polohu");
-        problemWindowLocateBtn.setAttribute("kind", "neutral");
-        problemWindowLocateBtn.innerText = "Získat vaší polohu";
-        problemWindowLocateBtn.addEventListener("click", () => {
-          problemWindowLocateBtn.setAttribute("disabled", "");
-          locateVM.locate().then(() => {
-            problemWindowLocateBtn.removeAttribute("disabled");
-          });
-        });
-        problemWindowHeader.append(problemWindowLocateBtn);
-          
+        problemWindowLocateBtn.innerText = "Moje poloha";
+        
         // Close button
         let problemWindowCloseBtn = document.createElement("calcite-icon");
         problemWindowCloseBtn.setAttribute("icon", "x");
@@ -250,9 +265,15 @@ require([
         problemWindowCloseBtn.setAttribute("title", "Zavřít");
         problemWindowCloseBtn.setAttribute("text-label", "Zavřít");
         problemWindowCloseBtn.addEventListener("click", () => {
-          closeAddProblemToMapWindow(problemWindowContainer, addProblemBtn, problemWindowBody)
+          closeAddProblemToMapWindow(problemWindowContainer, addProblemBtn, problemWindowBody, problemWindowLocateBtn)
         });
         problemWindowHeader.append(problemWindowCloseBtn);
+
+        // Window body
+        let problemWindowBody = document.createElement("div");
+        problemWindowBody.innerHTML = messageSelectPlace;
+        problemWindowBody.firstChild.childNodes[2].append(problemWindowLocateBtn);
+        problemWindowBody.classList.add("problems-map-window-body");
         
         problemWindowContainer.append(problemWindowHeader);
         problemWindowContainer.append(problemWindowBody);
@@ -269,8 +290,8 @@ require([
         newAddProblemBtn.setAttribute("kind", "neutral");
         newAddProblemBtn.innerText = "Změnit místo";
         newAddProblemBtn.addEventListener("click", () => {
-          resetSketchViewModel(problemWindowBody);
-          activeSketchingToMap(problemWindowBody, problemActionBar);
+          resetSketchViewModel(problemWindowBody, problemWindowLocateBtn);
+          activateSketchingToMap(problemWindowBody, problemActionBar);
         });
         problemActionBar.append(newAddProblemBtn);
 
@@ -289,11 +310,18 @@ require([
         // Business
         addProblemBtn.addEventListener("click", () => {
           showAddProblemToMapWindow(addProblemContainer, problemWindowContainer, addProblemBtn);
-          activeSketchingToMap(problemWindowBody, problemActionBar);
+          activateSketchingToMap(problemWindowBody, problemActionBar);
+        });
+        problemWindowLocateBtn.addEventListener("click", () => {
+          problemWindowLocateBtn.setAttribute("disabled", "");
+          locateVM.locate().then((e) => {
+            view.graphics.removeAll();  
+            placeSketchToMapDirectly(e, problemWindowBody, problemActionBar) 
+            problemWindowLocateBtn.removeAttribute("disabled");
+          });
         });
        
-
-        // --- Widget ---
+        // WIDGETS ---
         // Search
         var searchWidget = new Search({ 
           view,
@@ -325,8 +353,7 @@ require([
           ]
         });
 
-        // --- Layout aplikace ---
-        // Uspořádání prvků
+        // Widgets positioning
         view.ui.add(locateWidget, "top-left", 0);
         view.ui.add(homeWidget, "top-left", 1);
         view.ui.add(basemapWidget, "top-left", 2);
@@ -334,7 +361,8 @@ require([
         view.ui.add(searchWidget, "top-right", 1);
         view.ui.add(addProblemContainer, "bottom-right", 1);
           
-        // LAYERS VISIBILITY
+        // WATCHING EVENTS
+        // Layers visibility
         reactiveUtils.watch(function() { return([map.basemap]) }, 
         ([basemap]) => {
           if (basemap.title === 'Letecká mapa') {
@@ -353,7 +381,7 @@ require([
         }
       ); 
 
-      // ELEMENTS RESIZING AND POSITIONING
+      // Elements resizing and positioning
       reactiveUtils.watch(function() { return([view.width, view.height]) }, 
         ([width, height]) => {
           if (width < 545) {
@@ -382,9 +410,13 @@ require([
         }
       ); 
 
+      // Locate
+      locateWidget.on("locate", () => {
+        moveLocateGraphicUnderSketch();
+      })
     });
 
-    // FUNCTIONS
+    // FUNCTIONS ---
     // Show window for adding problem point to map
     let showAddProblemToMapWindow = (container, window, btn) => {
       container.prepend(window);
@@ -392,53 +424,75 @@ require([
     }
 
     // Close window for adding problem point to map
-    let closeAddProblemToMapWindow = (window, btn, info) => {
+    let closeAddProblemToMapWindow = (window, btn, info, problemWindowLocateBtn) => {
       window.remove(); // Remove window for adding point
       btn.style.display = "flex"; // Enable create button
-      resetSketchViewModel(info);
+      resetSketchViewModel(info, problemWindowLocateBtn);
     }
 
     // Reset sketch view model
-    let resetSketchViewModel = (info) => {
-      info.innerHTML = messageSelectPlace; // Reset window message to initial state
+    let resetSketchViewModel = (info, problemWindowLocateBtn) => {
+      info.innerHTML = messageSelectPlace; 
+      info.firstChild.childNodes[2].append(problemWindowLocateBtn);// Reset window message to initial state
       sketchLayer.graphics.removeAll(); // Remove graphic from map
       if (sketchViewModel) { sketchViewModel.cancel(); } // Reset sketchViewModel
     }
 
     // Active sketching point problem in map
-    let activeSketchingToMap = (info, actionBar) => {
-      // Define sketch symbol 
-      sketchSymbol = {
-        type: "simple-marker",
-        style: "circle",
-        size: 15,
-        color: "#00F700",
-        outline: {
-          color: "#ffffff",
-          width: 1.5
-        }
-      }
-
+    let activateSketchingToMap = (info, actionBar) => {
+      
       // Create model
-      sketchViewModel = new SketchViewModel({
-        view,
-        layer: sketchLayer,
-        pointSymbol: sketchSymbol,
-        defaultUpdateOptions: {highlightOptions: {enabled: false}}
-      });
+      sketchViewModel = new SketchViewModel(sketchViewModelOptions);
 
       // Initialize sketching
       sketchViewModel.create("point");
 
+      // Move locate graphic under závada graphic
+      moveLocateGraphicUnderSketch()
+      
       // Events
-      sketchViewModel.on("create", function(event) {
-        if(event.state === "complete") {
+      sketchViewModel.on("create", function(e) {
+        if(e.state === "complete") {
           info.innerHTML = messageSelectPlaceSuccess;
           info.append(actionBar);
+          console.log("bod závady vložen");
         }
       });
-      sketchViewModel.on("update", function(event) {
+      sketchViewModel.on("update", function() {
         console.log("bod závady přesunut");
       });
+    }
+
+    let placeSketchToMapDirectly = (e, info, actionBar) => {
+      
+      // Create map graphic
+      let graphic = new Graphic({
+        geometry: {
+          type: "point",
+          longitude: e.coords.longitude, 
+          latitude: e.coords.latitude
+        },
+        symbol: sketchSymbol
+      });
+
+      sketchLayer.graphics.add(graphic);
+
+      info.innerHTML = messageSelectPlaceSuccess;
+
+      console.log("bod závady vložen");
+    }
+
+    // Move locate graphic under závada graphic
+    let moveLocateGraphicUnderSketch = () => {
+      if (view.graphics) {
+        view.graphics.forEach(graphic => {
+          if (graphic.attributes) {
+            if ('altitudeAccuracy' in graphic.attributes) {
+              view.graphics.removeAll(); 
+              locateLayer.add(graphic);
+            }
+          }
+        });
+      }
     }
 });
