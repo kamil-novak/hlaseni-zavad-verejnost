@@ -164,22 +164,6 @@ require([
         });
 
         // Widget
-        // Legenda
-        var legendNode = document.createElement("div");
-        legendNode.style.padding = "10px";
-        legendNode.classList.add("esri-widget--panel", "esri-widget");
-        legendNode.innerHTML = config.legendWidgetContent;
-
-        var legendWidget = new Expand({
-          content: legendNode, 
-          view: view,
-          expandTooltip: "Legenda",
-          collapseTooltip: "Sbalit legendu",
-          group: "top-left",
-          expandIcon: "list"
-        });
-
-        // Widget
         // O aplikaci
         var infoNode = document.createElement("div");
         infoNode.style.padding = "10px";
@@ -341,9 +325,8 @@ require([
         // Uspořádání prvků
         view.ui.add(locateWidget, "top-left", 0);
         view.ui.add(homeWidget, "top-left", 1);
-        view.ui.add(legendWidget, "top-left", 2);
-        view.ui.add(basemapWidget, "top-left", 3);
-        view.ui.add(infoWidget, "top-left", 4);
+        view.ui.add(basemapWidget, "top-left", 2);
+        view.ui.add(infoWidget, "top-left", 3);
         view.ui.add(searchWidget, "top-right", 1);
         view.ui.add(addProblemContainer, "bottom-right", 1);
           
@@ -370,37 +353,25 @@ require([
       reactiveUtils.watch(function() { return([view.width, view.height]) }, 
         ([width, height]) => {
           if (width < 545) {
-              // Legends widget
-              if (height < 1130) { 
-                legendNode.style.maxHeight = "none";
-              }
+            // About widget
+            if (height < 1130) {
+              infoNode.style.maxHeight = "none";
+            }
 
-              // About widget
-              if (height < 1130) {
-                infoNode.style.maxHeight = "none";
-              }
-
-              // Add problem button
-              addProblemContainer.classList.add("mobile-layout");
-              view.ui.add(addProblemContainer, "manual", 1);
-              
-
+            // Add problem button
+            addProblemContainer.classList.add("mobile-layout");
+            view.ui.add(addProblemContainer, "manual", 1);
           } 
           else {
-              // Legends widget
-              if (height <= 1130) {
-                legendNode.style.maxHeight = (height - 300) + "px";
-              }
+            // About
+            if (height <= 1130) {
+              infoNode.style.maxHeight = (height - 350) + "px";
+            }
 
-              // About
-              if (height <= 1130) {
-                infoNode.style.maxHeight = (height - 350) + "px";
-              }
-
-              // Add problem button
-              addProblemContainer.classList.remove("mobile-layout");
-              view.ui.add(addProblemContainer, "bottom-right", 1);
-             }
+            // Add problem button
+            addProblemContainer.classList.remove("mobile-layout");
+            view.ui.add(addProblemContainer, "bottom-right", 1);
+          }
         }, 
         {
           initial: true
