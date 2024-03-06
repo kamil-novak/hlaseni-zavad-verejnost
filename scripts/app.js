@@ -144,6 +144,7 @@ require([
 
         // Sketching layer
         view.map.add(sketchLayer);
+        map.reorder(sketchLayer, 0);
 
         // Widget
         // Tlačítko Home
@@ -155,12 +156,15 @@ require([
         // Widget
         // Lokalizace
         var locateWidget = new Locate({
-          view: view,  
-          scale: 2500,
+          view,
+          scale: 500,
+          popupEnabled: false,
           label: "Najdi moji polohu",
         });
         let locateVM = new LocateVM({
-          view
+          view,
+          scale: 500,
+          popupEnabled: false,
         });
 
         // Widget
@@ -407,7 +411,7 @@ require([
       sketchSymbol = {
         type: "simple-marker",
         style: "circle",
-        size: 10,
+        size: 15,
         color: "#00F700",
         outline: {
           color: "#ffffff",
