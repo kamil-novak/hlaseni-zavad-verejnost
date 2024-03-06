@@ -98,7 +98,10 @@ require([
       padding: { top: 55 },
       popup: new Popup({
         visibleElements: {
-          actionBar: false,
+          actionBar: false, // Disable popup actions since JS SDK v. 4.29
+        },
+        viewModel: {
+          includeDefaultActions: false // Disable popup actions before JS SDK v. 4.29
         }
       }),
       extent: {
