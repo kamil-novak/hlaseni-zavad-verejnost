@@ -203,9 +203,11 @@ body,
 }
 .problems-map-message-select {
     text-align: left;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 0px;
 }
-.problems-map-message-select > div:last-child {
-    margin-top: 10px;
+.problems-map-message-select > div:nth-child(2) {
     color: var(--color-four);
 }
 .problems-map-message-selected {

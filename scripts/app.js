@@ -254,9 +254,12 @@ require([
         problemWindowHeader.append(problemWindowTitle);
 
         // Locate  
-        let problemWindowLocateBtn = document.createElement("calcite-link");
-        problemWindowLocateBtn.setAttribute("icon-start", "gps-off");
-        problemWindowLocateBtn.innerText = "Moje poloha";
+        let problemWindowLocateBtn = document.createElement("calcite-fab");
+        problemWindowLocateBtn.setAttribute("icon", "gps-off");
+        problemWindowLocateBtn.setAttribute("kind", "neutral");
+        problemWindowLocateBtn.setAttribute("scale", "s");
+        problemWindowLocateBtn.setAttribute("text-enabled", "");
+        problemWindowLocateBtn.setAttribute("text", "Moje poloha");
         
         // Close button
         let problemWindowCloseBtn = document.createElement("calcite-icon");
@@ -272,7 +275,7 @@ require([
         // Window body
         let problemWindowBody = document.createElement("div");
         problemWindowBody.innerHTML = messageSelectPlace;
-        problemWindowBody.firstChild.childNodes[2].append(problemWindowLocateBtn);
+        problemWindowBody.firstChild.append(problemWindowLocateBtn);
         problemWindowBody.classList.add("problems-map-window-body");
         
         problemWindowContainer.append(problemWindowHeader);
@@ -313,11 +316,15 @@ require([
           activateSketchingToMap(problemWindowBody, problemActionBar);
         });
         problemWindowLocateBtn.addEventListener("click", () => {
+          problemWindowLocateBtn.setAttribute("loading", "");
+          problemWindowLocateBtn.removeAttribute("icon");
           problemWindowLocateBtn.setAttribute("disabled", "");
           locateVM.locate().then((e) => {
             view.graphics.removeAll();  
             placeSketchToMapDirectly(e, problemWindowBody, problemActionBar) 
             problemWindowLocateBtn.removeAttribute("disabled");
+            problemWindowLocateBtn.removeAttribute("loading");
+            problemWindowLocateBtn.setAttribute("icon", "gps-off");
           });
         });
        
@@ -433,7 +440,7 @@ require([
     // Reset sketch view model
     let resetSketchViewModel = (info, problemWindowLocateBtn) => {
       info.innerHTML = messageSelectPlace; 
-      info.firstChild.childNodes[2].append(problemWindowLocateBtn);// Reset window message to initial state
+      info.firstChild.append(problemWindowLocateBtn); // Reset window message to initial state
       sketchLayer.graphics.removeAll(); // Remove graphic from map
       if (sketchViewModel) { sketchViewModel.cancel(); } // Reset sketchViewModel
     }
