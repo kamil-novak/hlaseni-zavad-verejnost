@@ -1,4 +1,4 @@
-// MODULS ---
+// ARCGIS JS API MODULS ---
 require([
     "esri/WebMap",
     "esri/views/MapView",
@@ -25,6 +25,95 @@ require([
 
     // GLOBAL VARIABLES ---
     let sketchViewModel = null;
+
+    // DOM ---
+    // MESSAGES
+    const messageSelectPlace = `<div class="problems-map-message-select"><div>Kliknutím vyberte místo závady v mapě.</div> <div>Místo závady je možné vybrat také automaticky na základě vaší aktuální polohy kliknutím zde: </div></div>`
+    const messageSelectPlaceSuccess = `<div class="problems-map-message-selected"><calcite-icon class="problems-map-check-icon" icon="check"></calcite-icon> Místo závady úspěšně vybráno.</div>`
+
+    // ADD CONTAINER WINDOW - map part
+    // Container
+    let addProblemContainer = document.createElement("div");
+    addProblemContainer.classList.add("problems-map-container");
+
+    // Button
+    let addProblemBtn = document.createElement("calcite-button");
+    addProblemBtn.setAttribute("scale", "l");
+    addProblemBtn.setAttribute("icon-start", "plus-circle");
+    // addProblemBtn.setAttribute("disabled", "");
+    addProblemBtn.innerHTML = "Nahlásit novou závadu";
+      
+    addProblemContainer.append(addProblemBtn);
+
+    // Window container
+    let problemWindowContainer = document.createElement("div");
+    problemWindowContainer.classList.add("problems-map-window");
+    
+    // Window header
+    let problemWindowHeader = document.createElement("div");
+    problemWindowHeader.classList.add("problems-map-window-header");
+
+    // Window title
+    let problemWindowTitle = document.createElement("div");
+    problemWindowTitle.innerText = "Místo závady";
+    problemWindowTitle.classList.add("problems-map-window-title");
+    problemWindowHeader.append(problemWindowTitle);
+
+    // Locate  
+    let problemWindowLocateBtn = document.createElement("calcite-fab");
+    problemWindowLocateBtn.setAttribute("icon", "gps-off");
+    problemWindowLocateBtn.setAttribute("kind", "neutral");
+    problemWindowLocateBtn.setAttribute("scale", "s");
+    problemWindowLocateBtn.setAttribute("text-enabled", "");
+    problemWindowLocateBtn.setAttribute("text", "Moje poloha");
+    
+    // Close button
+    let problemWindowCloseBtn = document.createElement("calcite-icon");
+    problemWindowCloseBtn.setAttribute("icon", "x");
+    problemWindowCloseBtn.setAttribute("scale", "l");
+    problemWindowCloseBtn.setAttribute("title", "Zavřít");
+    problemWindowCloseBtn.setAttribute("text-label", "Zavřít");
+    problemWindowCloseBtn.addEventListener("click", () => {
+      closeAddProblemToMapWindow();
+    });
+    problemWindowHeader.append(problemWindowCloseBtn);
+
+    // Window body
+    let problemWindowBody = document.createElement("div");
+    problemWindowBody.innerHTML = messageSelectPlace;
+    problemWindowBody.firstChild.append(problemWindowLocateBtn);
+    problemWindowBody.classList.add("problems-map-window-body");
+    
+    problemWindowContainer.append(problemWindowHeader);
+    problemWindowContainer.append(problemWindowBody);
+
+    // Action bar
+    let problemActionBar = document.createElement("div");
+    problemActionBar.classList.add("problems-map-action-bar");
+
+    let newAddProblemBtn = document.createElement("calcite-button");
+    newAddProblemBtn.setAttribute("icon-start", "refresh");
+    newAddProblemBtn.setAttribute("scale", "s");
+    newAddProblemBtn.setAttribute("appearance", "solid");
+    newAddProblemBtn.setAttribute("title", "Změnit místo");
+    newAddProblemBtn.setAttribute("kind", "neutral");
+    newAddProblemBtn.innerText = "Změnit místo";
+    newAddProblemBtn.addEventListener("click", () => {
+      resetSketchViewModel();
+      activateSketchingToMap(problemWindowBody, problemActionBar);
+    });
+    problemActionBar.append(newAddProblemBtn);
+
+    let goToFormBtn = document.createElement("calcite-button");
+    goToFormBtn.setAttribute("icon-start", "caret-right");
+    goToFormBtn.setAttribute("scale", "m");
+    goToFormBtn.setAttribute("appearance", "solid");
+    goToFormBtn.setAttribute("title", "Pokračovat");
+    goToFormBtn.innerText = "Pokračovat";
+    goToFormBtn.addEventListener("click", () => {
+      console.log("Pokračovat");
+    });
+    problemActionBar.append(goToFormBtn);
 
     // APP lAYOUT ---
     // Header bar
@@ -142,10 +231,6 @@ require([
     let OperationalLayer_2 = null; // Katastrální území
     let OperationalLayer_3 = null; // Ulice
 
-    // Messages
-    const messageSelectPlace = `<div class="problems-map-message-select"><div>Kliknutím vyberte místo závady v mapě.</div> <div>Místo závady je možné vybrat také automaticky na základě vaší aktuální polohy kliknutím zde: </div></div>`
-    const messageSelectPlaceSuccess = `<div class="problems-map-message-selected"><calcite-icon class="problems-map-check-icon" icon="check"></calcite-icon> Místo závady úspěšně vybráno.</div>`
-    
     // MAIN CODE
     // After view is loaded    
     reactiveUtils.once( () => view.ready === true )
@@ -225,110 +310,7 @@ require([
             group: "top-left"
         });
 
-        // Add problem - map part
-        // Container
-        let addProblemContainer = document.createElement("div");
-        addProblemContainer.classList.add("problems-map-container");
-
-        // Button
-        let addProblemBtn = document.createElement("calcite-button");
-        addProblemBtn.setAttribute("scale", "l");
-        addProblemBtn.setAttribute("icon-start", "plus-circle");
-        // addProblemBtn.setAttribute("disabled", "");
-        addProblemBtn.innerHTML = "Nahlásit novou závadu";
-          
-        addProblemContainer.append(addProblemBtn);
-
-        // Window container
-        let problemWindowContainer = document.createElement("div");
-        problemWindowContainer.classList.add("problems-map-window");
-        
-        // Window header
-        let problemWindowHeader = document.createElement("div");
-        problemWindowHeader.classList.add("problems-map-window-header");
-
-        // Window title
-        let problemWindowTitle = document.createElement("div");
-        problemWindowTitle.innerText = "Místo závady";
-        problemWindowTitle.classList.add("problems-map-window-title");
-        problemWindowHeader.append(problemWindowTitle);
-
-        // Locate  
-        let problemWindowLocateBtn = document.createElement("calcite-fab");
-        problemWindowLocateBtn.setAttribute("icon", "gps-off");
-        problemWindowLocateBtn.setAttribute("kind", "neutral");
-        problemWindowLocateBtn.setAttribute("scale", "s");
-        problemWindowLocateBtn.setAttribute("text-enabled", "");
-        problemWindowLocateBtn.setAttribute("text", "Moje poloha");
-        
-        // Close button
-        let problemWindowCloseBtn = document.createElement("calcite-icon");
-        problemWindowCloseBtn.setAttribute("icon", "x");
-        problemWindowCloseBtn.setAttribute("scale", "l");
-        problemWindowCloseBtn.setAttribute("title", "Zavřít");
-        problemWindowCloseBtn.setAttribute("text-label", "Zavřít");
-        problemWindowCloseBtn.addEventListener("click", () => {
-          closeAddProblemToMapWindow(problemWindowContainer, addProblemBtn, problemWindowBody, problemWindowLocateBtn)
-        });
-        problemWindowHeader.append(problemWindowCloseBtn);
-
-        // Window body
-        let problemWindowBody = document.createElement("div");
-        problemWindowBody.innerHTML = messageSelectPlace;
-        problemWindowBody.firstChild.append(problemWindowLocateBtn);
-        problemWindowBody.classList.add("problems-map-window-body");
-        
-        problemWindowContainer.append(problemWindowHeader);
-        problemWindowContainer.append(problemWindowBody);
-
-        // Action bar
-        let problemActionBar = document.createElement("div");
-        problemActionBar.classList.add("problems-map-action-bar");
- 
-        let newAddProblemBtn = document.createElement("calcite-button");
-        newAddProblemBtn.setAttribute("icon-start", "refresh");
-        newAddProblemBtn.setAttribute("scale", "s");
-        newAddProblemBtn.setAttribute("appearance", "solid");
-        newAddProblemBtn.setAttribute("title", "Změnit místo");
-        newAddProblemBtn.setAttribute("kind", "neutral");
-        newAddProblemBtn.innerText = "Změnit místo";
-        newAddProblemBtn.addEventListener("click", () => {
-          resetSketchViewModel(problemWindowBody, problemWindowLocateBtn);
-          activateSketchingToMap(problemWindowBody, problemActionBar);
-        });
-        problemActionBar.append(newAddProblemBtn);
-
-        let goToFormBtn = document.createElement("calcite-button");
-        goToFormBtn.setAttribute("icon-start", "caret-right");
-        goToFormBtn.setAttribute("scale", "m");
-        goToFormBtn.setAttribute("appearance", "solid");
-        goToFormBtn.setAttribute("title", "Pokračovat");
-        goToFormBtn.innerText = "Pokračovat";
-        goToFormBtn.addEventListener("click", () => {
-          console.log("Pokračovat");
-        });
-        problemActionBar.append(goToFormBtn);
-
-        
-        // Business
-        addProblemBtn.addEventListener("click", () => {
-          showAddProblemToMapWindow(addProblemContainer, problemWindowContainer, addProblemBtn);
-          activateSketchingToMap(problemWindowBody, problemActionBar);
-        });
-        problemWindowLocateBtn.addEventListener("click", () => {
-          problemWindowLocateBtn.setAttribute("loading", "");
-          problemWindowLocateBtn.removeAttribute("icon");
-          problemWindowLocateBtn.setAttribute("disabled", "");
-          locateVM.locate().then((e) => {
-            view.graphics.removeAll();  
-            placeSketchToMapDirectly(e, problemWindowBody, problemActionBar) 
-            problemWindowLocateBtn.removeAttribute("disabled");
-            problemWindowLocateBtn.removeAttribute("loading");
-            problemWindowLocateBtn.setAttribute("icon", "gps-off");
-          });
-        });
-       
-        // WIDGETS ---
+        // Widget
         // Search
         var searchWidget = new Search({ 
           view,
@@ -358,6 +340,25 @@ require([
               }
             }
           ]
+        });
+
+        // Custom widget
+        // Add problem window
+        addProblemBtn.addEventListener("click", () => {
+          showAddProblemToMapWindow(addProblemContainer, problemWindowContainer, addProblemBtn);
+          activateSketchingToMap();
+        });
+        problemWindowLocateBtn.addEventListener("click", () => {
+          problemWindowLocateBtn.setAttribute("loading", "");
+          problemWindowLocateBtn.removeAttribute("icon");
+          problemWindowLocateBtn.setAttribute("disabled", "");
+          locateVM.locate().then((e) => {
+            view.graphics.removeAll();  
+            placeSketchToMapDirectly(e);
+            problemWindowLocateBtn.removeAttribute("disabled");
+            problemWindowLocateBtn.removeAttribute("loading");
+            problemWindowLocateBtn.setAttribute("icon", "gps-off");
+          });
         });
 
         // Widgets positioning
@@ -424,6 +425,7 @@ require([
     });
 
     // FUNCTIONS ---
+    // HTML
     // Show window for adding problem point to map
     let showAddProblemToMapWindow = (container, window, btn) => {
       container.prepend(window);
@@ -431,22 +433,28 @@ require([
     }
 
     // Close window for adding problem point to map
-    let closeAddProblemToMapWindow = (window, btn, info, problemWindowLocateBtn) => {
-      window.remove(); // Remove window for adding point
-      btn.style.display = "flex"; // Enable create button
-      resetSketchViewModel(info, problemWindowLocateBtn);
+    let closeAddProblemToMapWindow = () => {
+      problemWindowContainer.remove(); // Remove window for adding point
+      addProblemBtn.style.display = "flex"; // Enable create button
+      resetSketchViewModel();
     }
 
+    let changeMessageInProblemToMapWindow = (message) => {
+      problemWindowBody.innerHTML = message;
+      problemWindowBody.append(problemActionBar);
+    }
+
+    // BUSINESS
     // Reset sketch view model
-    let resetSketchViewModel = (info, problemWindowLocateBtn) => {
-      info.innerHTML = messageSelectPlace; 
-      info.firstChild.append(problemWindowLocateBtn); // Reset window message to initial state
+    let resetSketchViewModel = () => {
+      problemWindowBody.innerHTML = messageSelectPlace; 
+      problemWindowBody.firstChild.append(problemWindowLocateBtn); // Reset window message to initial state
       sketchLayer.graphics.removeAll(); // Remove graphic from map
       if (sketchViewModel) { sketchViewModel.cancel(); } // Reset sketchViewModel
     }
 
     // Active sketching point problem in map
-    let activateSketchingToMap = (info, actionBar) => {
+    let activateSketchingToMap = () => {
       
       // Create model
       sketchViewModel = new SketchViewModel(sketchViewModelOptions);
@@ -460,8 +468,7 @@ require([
       // Events
       sketchViewModel.on("create", function(e) {
         if(e.state === "complete") {
-          info.innerHTML = messageSelectPlaceSuccess;
-          info.append(actionBar);
+          changeMessageInProblemToMapWindow(messageSelectPlaceSuccess); 
           console.log("bod závady vložen");
         }
       });
@@ -470,7 +477,7 @@ require([
       });
     }
 
-    let placeSketchToMapDirectly = (e, info, actionBar) => {
+    let placeSketchToMapDirectly = (e) => {
 
       sketchViewModel.cancel();
       
@@ -486,8 +493,7 @@ require([
 
       sketchLayer.graphics.add(graphic);
 
-      info.innerHTML = messageSelectPlaceSuccess;
-      info.append(actionBar);
+      changeMessageInProblemToMapWindow(messageSelectPlaceSuccess); 
 
       console.log("bod závady vložen");
     }
