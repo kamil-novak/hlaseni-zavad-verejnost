@@ -206,6 +206,10 @@ body,
     display: flex;
     flex-wrap: wrap;
     gap: 10px 0px;
+    margin-bottom: 10px;
+}
+.problems-map-message-select > div:nth-child(1) {
+    color: var(--color-one);
 }
 .problems-map-message-select > div:nth-child(2) {
     color: var(--color-four);

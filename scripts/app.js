@@ -28,7 +28,7 @@ require([
 
     // DOM ---
     // MESSAGES
-    const messageSelectPlace = `<div class="problems-map-message-select"><div>Kliknutím vyberte místo závady v mapě.</div> <div>Místo závady je možné vybrat také automaticky na základě vaší aktuální polohy kliknutím zde: </div></div>`
+    const messageSelectPlace = `<div class="problems-map-message-select"><div><calcite-icon icon="cursor-selection" scale="s"></calcite-icon> Kliknutím vyberte místo závady v mapě.</div> <div>Místo závady je možné vybrat také automaticky na základě vaší aktuální polohy kliknutím zde: </div></div>`
     const messageSelectPlaceSuccess = `<div class="problems-map-message-selected"><calcite-icon class="problems-map-check-icon" icon="check"></calcite-icon> Místo závady úspěšně vybráno.</div>`
 
     // ADD CONTAINER WINDOW - map part
@@ -60,12 +60,12 @@ require([
     problemWindowHeader.append(problemWindowTitle);
 
     // Locate  
-    let problemWindowLocateBtn = document.createElement("calcite-fab");
-    problemWindowLocateBtn.setAttribute("icon", "gps-off");
+    let problemWindowLocateBtn = document.createElement("calcite-button");
+    problemWindowLocateBtn.setAttribute("icon-start", "gps-off");
     problemWindowLocateBtn.setAttribute("kind", "neutral");
-    problemWindowLocateBtn.setAttribute("scale", "s");
-    problemWindowLocateBtn.setAttribute("text-enabled", "");
-    problemWindowLocateBtn.setAttribute("text", "Moje poloha");
+    problemWindowLocateBtn.setAttribute("scale", "m");
+    problemWindowLocateBtn.setAttribute("alignment", "start");
+    problemWindowLocateBtn.innerText = "Moje poloha";
     
     // Close button
     let problemWindowCloseBtn = document.createElement("calcite-icon");
@@ -81,7 +81,7 @@ require([
     // Window body
     let problemWindowBody = document.createElement("div");
     problemWindowBody.innerHTML = messageSelectPlace;
-    problemWindowBody.firstChild.append(problemWindowLocateBtn);
+    problemWindowBody.append(problemWindowLocateBtn);
     problemWindowBody.classList.add("problems-map-window-body");
     
     problemWindowContainer.append(problemWindowHeader);
@@ -345,19 +345,19 @@ require([
         // Custom widget
         // Add problem window
         addProblemBtn.addEventListener("click", () => {
-          showAddProblemToMapWindow(addProblemContainer, problemWindowContainer, addProblemBtn);
+          showAddProblemToMapWindow();
           activateSketchingToMap();
         });
         problemWindowLocateBtn.addEventListener("click", () => {
           problemWindowLocateBtn.setAttribute("loading", "");
-          problemWindowLocateBtn.removeAttribute("icon");
+          problemWindowLocateBtn.removeAttribute("icon-start");
           problemWindowLocateBtn.setAttribute("disabled", "");
           locateVM.locate().then((e) => {
             view.graphics.removeAll();  
             placeSketchToMapDirectly(e);
             problemWindowLocateBtn.removeAttribute("disabled");
             problemWindowLocateBtn.removeAttribute("loading");
-            problemWindowLocateBtn.setAttribute("icon", "gps-off");
+            problemWindowLocateBtn.setAttribute("icon-start", "gps-off");
           });
         });
 
@@ -427,9 +427,9 @@ require([
     // FUNCTIONS ---
     // HTML
     // Show window for adding problem point to map
-    let showAddProblemToMapWindow = (container, window, btn) => {
-      container.prepend(window);
-      btn.style.display = "none";
+    let showAddProblemToMapWindow = () => {
+      addProblemContainer.prepend(problemWindowContainer);
+      addProblemBtn.style.display = "none";
     }
 
     // Close window for adding problem point to map
@@ -439,16 +439,15 @@ require([
       resetSketchViewModel();
     }
 
-    let changeMessageInProblemToMapWindow = (message) => {
+    let changeMessageInProblemToMapWindow = (message, actionBar) => {
       problemWindowBody.innerHTML = message;
-      problemWindowBody.append(problemActionBar);
+      problemWindowBody.append(actionBar);
     }
 
     // BUSINESS
     // Reset sketch view model
     let resetSketchViewModel = () => {
-      problemWindowBody.innerHTML = messageSelectPlace; 
-      problemWindowBody.firstChild.append(problemWindowLocateBtn); // Reset window message to initial state
+      changeMessageInProblemToMapWindow(messageSelectPlace, problemWindowLocateBtn); 
       sketchLayer.graphics.removeAll(); // Remove graphic from map
       if (sketchViewModel) { sketchViewModel.cancel(); } // Reset sketchViewModel
     }
@@ -468,7 +467,7 @@ require([
       // Events
       sketchViewModel.on("create", function(e) {
         if(e.state === "complete") {
-          changeMessageInProblemToMapWindow(messageSelectPlaceSuccess); 
+          changeMessageInProblemToMapWindow(messageSelectPlaceSuccess, problemActionBar); 
           console.log("bod závady vložen");
         }
       });
@@ -493,7 +492,7 @@ require([
 
       sketchLayer.graphics.add(graphic);
 
-      changeMessageInProblemToMapWindow(messageSelectPlaceSuccess); 
+      changeMessageInProblemToMapWindow(messageSelectPlaceSuccess, problemActionBar); 
 
       console.log("bod závady vložen");
     }
