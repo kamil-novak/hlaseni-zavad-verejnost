@@ -464,6 +464,8 @@ require([
     }
 
     let placeSketchToMapDirectly = (e, info, actionBar) => {
+
+      sketchViewModel.cancel();
       
       // Create map graphic
       let graphic = new Graphic({
@@ -478,6 +480,7 @@ require([
       sketchLayer.graphics.add(graphic);
 
       info.innerHTML = messageSelectPlaceSuccess;
+      info.append(actionBar);
 
       console.log("bod závady vložen");
     }
