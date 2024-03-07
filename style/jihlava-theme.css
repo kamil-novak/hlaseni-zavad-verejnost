@@ -210,6 +210,12 @@ body,
 }
 .problems-map-message-select > div:nth-child(1) {
     color: var(--color-one);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.problems-map-message-select > div:nth-child(1) clacite-icon {
+    margin-top: 2px;
 }
 .problems-map-message-select > div:nth-child(2) {
     color: var(--color-four);
