@@ -121,9 +121,6 @@ require([
     let problemFormContainer = document.getElementById("problems-form-container");
     let overlayEl = document.querySelector(".overlay");
     let problemFormCloseBtn = document.querySelector("#problems-form-container .problems-close");
-    problemFormCloseBtn.addEventListener("click", () => {
-      closeProblemFormContainer();
-    })
     // Form
     let problemForm = document.querySelector("#problems-form-container .problems-form");
     
@@ -371,6 +368,15 @@ require([
             problemWindowLocateBtn.removeAttribute("loading");
             problemWindowLocateBtn.setAttribute("icon-start", "gps-off");
           });
+        });
+        // Form
+        problemFormCloseBtn.addEventListener("click", () => {
+          closeProblemFormContainer();
+        });
+        overlayEl.addEventListener("click", (e) => {
+          if(e.target === overlayEl) {
+            closeProblemFormContainer();
+          }
         });
 
         // Widgets positioning
