@@ -210,9 +210,13 @@ body,
 }
 .problems-map-message-select > div:nth-child(1) {
     color: var(--color-one);
-    display: flex;
-    align-items: center;
+    vertical-align: middle;
     gap: 5px;
+}
+.problems-map-message-select > div:nth-child(1) calcite-icon {
+    position: relative;
+    top: 3px;
+    left: 0px;
 }
 .problems-map-message-select > div:nth-child(2) {
     color: var(--color-four);
