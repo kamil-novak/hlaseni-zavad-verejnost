@@ -119,6 +119,7 @@ require([
     // PROBLEM FORM
     // Container
     let problemFormContainer = document.getElementById("problems-form-container");
+    let overlayEl = document.querySelector(".overlay");
     let problemFormCloseBtn = document.querySelector("#problems-form-container .problems-close");
     problemFormCloseBtn.addEventListener("click", () => {
       closeProblemFormContainer();
@@ -461,10 +462,10 @@ require([
     // Problems form
     // Show problems form
     let showProblemFormContainer = () => {
-      problemFormContainer.classList.add("opened");
+      overlayEl.classList.add("opened");
     }
     let closeProblemFormContainer = () => {
-      problemFormContainer.classList.remove("opened");
+      overlayEl.classList.remove("opened");
     }
 
     // BUSINESS

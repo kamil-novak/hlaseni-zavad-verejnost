@@ -158,6 +158,20 @@ body,
 
 /* PROBLEMS - MAP PART */
 /* General */
+.overlay {
+    background: rgba(0,0,0,.5);
+    width: 100%;
+    display: block;
+    height: calc(100dvh - 45px);
+    position: absolute;
+    top: 45px;
+    right: 0px;
+    display: none;
+    justify-content: right;
+}
+.overlay.opened {
+    display: flex;
+}
 .problems-header {
     text-align: right;
     height: 35px;
@@ -183,6 +197,9 @@ body,
     position: relative;
     top: 2.5px;
     left: 0px;
+}
+[icon="x"] {
+    cursor: pointer;
 }
 /* Button */
 .problems-map-container {
@@ -258,21 +275,14 @@ body,
 
 /* PROBLEMS - FORM PART */
 #problems-form-container {
-    display: none;
     box-sizing: border-box;
-    position: absolute;
     font-family: var(--font-family-one);
     font-size: var(--font-size-one);
-    top: 45px;
-    right: 0px;
     padding: 20px 15px;
     background-color: white;
-    height: calc(100dvh - 45px);
     width: 60%;
+    height: 100%;
     z-index: 2;
-}
-#problems-form-container.opened {
-    display: block;
 }
 #problems-form-container.mobile-layout {
     width: 100%;
