@@ -28,10 +28,10 @@ require([
 
     // DOM ---
     // MESSAGES
-    const messageSelectPlace = `<div class="problems-map-message-select"><div><calcite-icon icon="cursor-selection" scale="s"></calcite-icon> Kliknutím vyberte místo závady v mapě.</div> <div>Místo závady je možné vybrat také automaticky na základě vaší aktuální polohy kliknutím zde: </div></div>`
+    const messageSelectPlace = `<div class="problems-map-message-select problems-info"><div><calcite-icon icon="cursor-selection" scale="s"></calcite-icon> Kliknutím vyberte místo závady v mapě.</div> <div>Místo závady je možné vybrat také automaticky na základě vaší aktuální polohy kliknutím zde: </div></div>`
     const messageSelectPlaceSuccess = `<div class="problems-map-message-selected"><calcite-icon class="problems-map-check-icon" icon="check"></calcite-icon> Místo závady úspěšně vybráno.</div>`
 
-    // ADD CONTAINER WINDOW - map part
+    // PROBLEM WINDOW
     // Container
     let addProblemContainer = document.createElement("div");
     addProblemContainer.classList.add("problems-map-container");
@@ -51,7 +51,7 @@ require([
     
     // Window header
     let problemWindowHeader = document.createElement("div");
-    problemWindowHeader.classList.add("problems-map-window-header");
+    problemWindowHeader.classList.add("problems-header");
 
     // Window title
     let problemWindowTitle = document.createElement("div");
@@ -82,7 +82,7 @@ require([
     let problemWindowBody = document.createElement("div");
     problemWindowBody.innerHTML = messageSelectPlace;
     problemWindowBody.append(problemWindowLocateBtn);
-    problemWindowBody.classList.add("problems-map-window-body");
+    problemWindowBody.classList.add("problems-body");
     
     problemWindowContainer.append(problemWindowHeader);
     problemWindowContainer.append(problemWindowBody);
@@ -112,9 +112,20 @@ require([
     goToFormBtn.innerText = "Pokračovat";
     goToFormBtn.addEventListener("click", () => {
       console.log("Pokračovat");
+      showProblemFormContainer();
     });
     problemActionBar.append(goToFormBtn);
 
+    // PROBLEM FORM
+    // Container
+    let problemFormContainer = document.getElementById("problems-form-container");
+    let problemFormCloseBtn = document.querySelector("#problems-form-container .problems-close");
+    problemFormCloseBtn.addEventListener("click", () => {
+      closeProblemFormContainer();
+    })
+    // Form
+    let problemForm = document.querySelector("#problems-form-container .problems-form");
+    
     // APP lAYOUT ---
     // Header bar
     document.querySelector(".title-container").innerHTML = config.headerTitle;
@@ -400,6 +411,7 @@ require([
 
             // Add problem button
             addProblemContainer.classList.add("mobile-layout");
+            problemFormContainer.classList.add("mobile-layout");
             view.ui.add(addProblemContainer, "manual", 1);
           } 
           else {
@@ -410,6 +422,7 @@ require([
 
             // Add problem button
             addProblemContainer.classList.remove("mobile-layout");
+            problemFormContainer.classList.remove("mobile-layout");
             view.ui.add(addProblemContainer, "bottom-right", 1);
           }
         }, 
@@ -426,6 +439,7 @@ require([
 
     // FUNCTIONS ---
     // HTML
+    // Problem window
     // Show window for adding problem point to map
     let showAddProblemToMapWindow = () => {
       addProblemContainer.prepend(problemWindowContainer);
@@ -442,6 +456,15 @@ require([
     let changeMessageInProblemToMapWindow = (message, actionBar) => {
       problemWindowBody.innerHTML = message;
       problemWindowBody.append(actionBar);
+    }
+
+    // Problems form
+    // Show problems form
+    let showProblemFormContainer = () => {
+      problemFormContainer.classList.add("opened");
+    }
+    let closeProblemFormContainer = () => {
+      problemFormContainer.classList.remove("opened");
     }
 
     // BUSINESS

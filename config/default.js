@@ -20,6 +20,40 @@ var config = {
 
     // Portal URL
     portalUrl: "https://gis.jihlava-city.cz/portal",
+
+    // Typ závady
+    problemTyp: [
+        {
+            name: "Odpady",
+            code: "odpady",
+            image: ""
+        },
+        {
+            name: "Zeleň",
+            code: "zeleň",
+            image: ""
+        },
+        {
+            name: "Poškozené věci",
+            code: "poškozené věci",
+            image: ""
+        },
+        {
+            name: "Osvětlení",
+            code: "osvětlení",
+            image: ""
+        },
+        {
+            name: "Dětské hřiště",
+            code: "dětské hřiště",
+            image: ""
+        },
+        {
+            name: "Ostatní",
+            code: "ostatní",
+            image: ""
+        }
+    ],
  
     // Obsah widgetu o aplikaci (HTML)
     infoWidgetContent: "<div class='about-widget'><h3>Hlášení závad ve městě</h3><div><h4>Obsah mapové aplikace</h4> <p><span class='info-h5'>Lorem ipsum reprehenderit non officia nulla elit id. Officia laboris ipsum deserunt nostrud consequat incididunt qui tempor cillum veniam exercitation consectetur veniam. Reprehenderit elit laboris eiusmod nostrud commodo aliquip ipsum irure laborum qui reprehenderit id. Sint Lorem velit sunt cupidatat ipsum quis quis consectetur Lorem deserunt deserunt proident nucalcitella esse.</p></div></div>",

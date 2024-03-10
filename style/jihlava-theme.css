@@ -1,7 +1,8 @@
 /* VARIABLES --- */
 :root {
     /* Font */
-    --font-one: Roboto;
+    --font-family-one: Roboto;
+    --font-size-one: 14px;
     /* Colors */
     --color-one: #CA1517;
     --color-two: #e7181c;
@@ -10,7 +11,8 @@
     --color-five: #D3D3D3;
     --color-six: #151515;
     /* Others */
-    --title-bar-height: 45px
+    --title-bar-height: 45px;
+    --problem-element-padding-top: 10px;
 }
 
 /* GENERAL SETTINGS --- */
@@ -24,7 +26,7 @@ body,
 
 }
 .esri-widget {
-    font-family: var(--font-one) !important;
+    font-family: var(--font-family-one) !important;
 }
 .invisible {
     visibility: collapse;
@@ -132,7 +134,7 @@ body,
 }
 .custom-legend-widget {
     line-height: 1.5em;
-    font-family: var(--font-one);
+    font-family: var(--font-family-one);
 }
 .custom-legend-widget:last-child {
     padding-bottom: 2.5em;
@@ -155,6 +157,33 @@ body,
 }
 
 /* PROBLEMS - MAP PART */
+/* General */
+.problems-header {
+    text-align: right;
+    height: 35px;
+    padding-bottom: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--color-four);
+    border-bottom: 1px solid var(--color-five);
+}
+.problems-body {
+    color: var(--color-six);
+    padding-top: var(--problem-element-padding-top);
+    font-size: var(--font-size-one);
+    line-height: 1.1rem;
+}
+.problems-info {
+    color: var(--color-one);
+    vertical-align: middle;
+    gap: 5px;
+}
+.problems-info calcite-icon {
+    position: relative;
+    top: 2.5px;
+    left: 0px;
+}
 /* Button */
 .problems-map-container {
     background-color: var(--color-three);
@@ -184,22 +213,8 @@ body,
 /* Window */
 .problems-map-window {
     background-color: var(--color-three);
-    font-family: var(--font-one);
+    font-family: var(--font-family-one);
     padding: 0px 5px 5px 5px;
-}
-.problems-map-window-header {
-    text-align: right;
-    height: 35px;
-    padding-bottom: 4px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: var(--color-four);
-}
-.problems-map-window-body {
-    color: var(--color-six);
-    border-top: 1px solid var(--color-five);
-    padding-top: 10px;
 }
 .problems-map-message-select {
     text-align: left;
@@ -207,16 +222,6 @@ body,
     flex-wrap: wrap;
     gap: 10px 0px;
     margin-bottom: 10px;
-}
-.problems-map-message-select > div:nth-child(1) {
-    color: var(--color-one);
-    vertical-align: middle;
-    gap: 5px;
-}
-.problems-map-message-select > div:nth-child(1) calcite-icon {
-    position: relative;
-    top: 3px;
-    left: 0px;
 }
 .problems-map-message-select > div:nth-child(2) {
     color: var(--color-four);
@@ -249,6 +254,31 @@ body,
 }
 .problems-map-action-bar calcite-button {
     margin: 0px;
+}
+
+/* PROBLEMS - FORM PART */
+#problems-form-container {
+    display: none;
+    box-sizing: border-box;
+    position: absolute;
+    font-family: var(--font-family-one);
+    font-size: var(--font-size-one);
+    top: 45px;
+    right: 0px;
+    padding: 20px 15px;
+    background-color: white;
+    height: calc(100dvh - 45px);
+    width: 60%;
+    z-index: 2;
+}
+#problems-form-container.opened {
+    display: block;
+}
+#problems-form-container.mobile-layout {
+    width: 100%;
+}
+.problems-form {
+    padding-top: var(--problem-element-padding-top);
 }
 
 /* LOADING SPINNER */
