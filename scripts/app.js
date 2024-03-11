@@ -28,8 +28,27 @@ require([
 
     // DOM ---
     // MESSAGES
-    const messageSelectPlace = `<div class="problems-map-message-select problems-info"><div><calcite-icon icon="cursor-selection" scale="s"></calcite-icon> Kliknutím vyberte místo závady v mapě.</div> <div>Místo závady je možné vybrat také automaticky na základě vaší aktuální polohy kliknutím zde: </div></div>`
-    const messageSelectPlaceSuccess = `<div class="problems-map-message-selected"><calcite-icon class="problems-map-check-icon" icon="check"></calcite-icon> Místo závady úspěšně vybráno.</div>`
+    const messageSelectPlace = `
+      <div class="problems-map-message-select problems-info">
+        <div>
+          <calcite-icon icon="cursor-selection" scale="s"></calcite-icon> 
+          Kliknutím vyberte místo závady v mapě.
+        </div> 
+        <div>
+          Místo závady je možné vybrat také automaticky na základě vaší aktuální polohy.
+          <span>
+          <calcite-icon id="locate-tooltip" icon="question" scale="s"></calcite-icon>
+            <calcite-tooltip label="Nápověda" reference-element="locate-tooltip">
+              <span>Povolte zjišťování polohy ve svém prohlížeči. Nastavení se nejčastěji nachází v oblasti adresního řádku.</span>
+            </calcite-tooltip>
+          </span>
+        </div>
+      </div>`
+    const messageSelectPlaceSuccess = `
+      <div class="problems-map-message-selected">
+        <calcite-icon class="problems-map-check-icon" icon="check"></calcite-icon> 
+        Místo závady úspěšně vybráno.
+      </div>`
 
     // PROBLEM WINDOW
     // Container
