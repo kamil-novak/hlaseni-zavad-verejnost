@@ -272,6 +272,10 @@ body,
 .problems-map-action-bar calcite-button {
     margin: 0px;
 }
+#locate-tooltip {
+    --calcite-color-text-link: var(--color-five);
+    --calcite-color-brand-underline: var(--color-five);
+}
 
 /* PROBLEMS - FORM PART */
 #problems-form-container {
