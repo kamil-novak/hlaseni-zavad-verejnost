@@ -273,8 +273,9 @@ body,
     margin: 0px;
 }
 #locate-tooltip {
-    --calcite-color-text-link: var(--color-five);
-    --calcite-color-brand-underline: var(--color-five);
+    --calcite-color-text-link: var(--color-four);
+    opacity: 0.5;
+    --calcite-color-brand-underline: transparent;
 }
 
 /* PROBLEMS - FORM PART */

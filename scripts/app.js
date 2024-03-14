@@ -37,7 +37,7 @@ require([
         <div>
           Místo závady je možné vybrat také automaticky na základě vaší aktuální polohy.
           <span>
-            <calcite-link id="locate-tooltip">?</calcite-link>
+            <calcite-link id="locate-tooltip">[ ? ]</calcite-link>
             <calcite-tooltip label="Nápověda" reference-element="locate-tooltip">
               <span>Povolte zjišťování polohy ve svém prohlížeči. Nastavení se nejčastěji nachází v oblasti adresního řádku.</span>
             </calcite-tooltip>
