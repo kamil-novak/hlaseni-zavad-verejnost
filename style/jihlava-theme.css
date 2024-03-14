@@ -23,7 +23,6 @@ body,
     margin: 0;
     height: 100%;
     width: 100%;
-
 }
 .esri-widget {
     font-family: var(--font-family-one) !important;
@@ -288,12 +287,20 @@ body,
     width: 60%;
     height: 100%;
     z-index: 2;
+    overflow-y: scroll;
 }
 #problems-form-container.mobile-layout {
     width: 100%;
 }
 .problems-form {
     padding-top: var(--problem-element-padding-top);
+}
+.problems-form .problem-question {
+    margin-bottom: 8px;
+}
+.problems-form calcite-card {
+    width: 30%;
+    --calcite-card-accent-color-selected: var(--color-one);
 }
 
 /* LOADING SPINNER */
@@ -352,4 +359,17 @@ body,
 :focus, :focus-within, :focus::after {
     outline: none !important;
     outline-offset: 0px !important;
+}
+
+/* Problems category */
+@media (max-width: 800px) {
+    .problems-form calcite-card {
+        width: calc(100% / 3 - .5rem);
+    }
+}
+
+@media (max-width: 400px) {
+    .problems-form calcite-card {
+        width: calc(100% / 2 - .5rem);
+    }
 }

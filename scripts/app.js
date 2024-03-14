@@ -141,7 +141,7 @@ require([
     let overlayEl = document.querySelector(".overlay");
     let problemFormCloseBtn = document.querySelector("#problems-form-container .problems-close");
     // Form
-    let problemForm = document.querySelector("#problems-form-container .problems-form");
+    let problemFormCategory = document.querySelector("#problems-form-container .problem-forms-category");
     
     // APP lAYOUT ---
     // Header bar
@@ -389,6 +389,25 @@ require([
           });
         });
         // Form
+        config.problemTyp.forEach((category) => {
+          let categoryCardEl = document.createElement("calcite-card");
+          let categoryImage = document.createElement("img");
+          categoryImage.setAttribute("slot", "thumbnail");
+          categoryImage.setAttribute("alt", `${category.name}`);
+          categoryImage.setAttribute("src", `${category.image}`);
+          let categoryTitle = document.createElement("span");
+          categoryTitle.setAttribute("slot", "title");
+          categoryTitle.innerText = `${category.name}`;
+          categoryCardEl.append(categoryImage);
+          categoryCardEl.append(categoryTitle);
+          categoryCardEl.addEventListener("click", () => {
+            problemFormCategory.children[1].childNodes.forEach((card) => {
+              card.removeAttribute("selected");
+            })
+            categoryCardEl.setAttribute("selected", "");
+          })
+          problemFormCategory.children[1].append(categoryCardEl);
+        })
         problemFormCloseBtn.addEventListener("click", () => {
           closeProblemFormContainer();
         });
@@ -397,6 +416,7 @@ require([
             closeProblemFormContainer();
           }
         });
+        // problemFormCategory
 
         // Widgets positioning
         view.ui.add(locateWidget, "top-left", 0);

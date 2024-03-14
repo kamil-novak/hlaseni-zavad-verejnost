@@ -26,32 +26,32 @@ var config = {
         {
             name: "Odpady",
             code: "odpady",
-            image: ""
+            image: "images/category_odpady.svg"
         },
         {
             name: "Zeleň",
             code: "zeleň",
-            image: ""
+            image: "images/category_zelen.svg"
         },
         {
             name: "Poškozené věci",
             code: "poškozené věci",
-            image: ""
+            image: "images/category_poskozene_veci.svg"
         },
         {
             name: "Osvětlení",
             code: "osvětlení",
-            image: ""
+            image: "images/category_osvetleni.svg"
         },
         {
             name: "Dětské hřiště",
             code: "dětské hřiště",
-            image: ""
+            image: "images/category_detske_hriste.svg"
         },
         {
             name: "Ostatní",
             code: "ostatní",
-            image: ""
+            image: "images/category_ostatni.svg"
         }
     ],
  
