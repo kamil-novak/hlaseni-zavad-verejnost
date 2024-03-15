@@ -151,6 +151,7 @@ require([
     // Form
     let problemFormCategory = document.querySelector("#problems-form-container .problem-category");
     let problemFormDescription = document.querySelector("#problems-form-container .problem-description");
+    let problemFormEmail = document.querySelector("#problems-form-container .problem-email");
     
     // APP lAYOUT ---
     // Header bar
@@ -415,7 +416,7 @@ require([
               card.removeAttribute("selected");
             })
             selectCategory(categoryCardEl, category);
-            setCategory(category.code);
+            setState("category", category.code);
           })
           problemFormCategory.children[1].append(categoryCardEl);
         })
@@ -424,17 +425,21 @@ require([
           let actualTextLength = e.target.value.length;
           let maxTextLength = e.target.maxLength;
           if (actualTextLength > 0 && actualTextLength <= maxTextLength) {
-            messageDescription(problemFormDescription, "valid", "check", "Popis závady vložen.");
-            setDescription(e.target.value);
+            setValidationMessage(problemFormDescription, "valid", "check", "Popis závady vložen.");
+            setState("description", e.target.value);
           }
           else if (actualTextLength === 0) {
-            messageDescription(problemFormDescription, "invalid", "exclamation-mark-triangle", "Chybí popis závady.");
-            setDescription(null);
+            setValidationMessage(problemFormDescription, "invalid", "exclamation-mark-triangle", "Chybí popis závady.");
+            setState("description", null);
           }
           else if (actualTextLength > maxTextLength) {
-            messageDescription(problemFormDescription, "invalid", "exclamation-mark-triangle", "Překročen povolený počet znaků pro popis závady.");
-            setDescription(null);
+            setValidationMessage(problemFormDescription, "invalid", "exclamation-mark-triangle", "Překročen povolený počet znaků pro popis závady.")
+            setState("description", null);
           }
+        })
+        // Email
+        problemFormEmail.querySelector("calcite-input").addEventListener("calciteInputInput", (e) => {
+          console.log(validateEmail(e.target.value));
         })
 
         // Close form
@@ -544,19 +549,16 @@ require([
 
     // Category
     let selectCategory = (categoryCardEl, category) => {
-      let message = problemFormCategory.querySelector("calcite-input-message");
-      message.innerText = `Zvolen typ závady ${category.name}`;
-      message.status = "valid";
-      message.icon = "check";
+      setValidationMessage(problemFormCategory, "valid", "check", `Zvolen typ závady ${category.name}`)
       categoryCardEl.setAttribute("selected", "");
     }
 
-    // Description
-    let messageDescription = (problemFormDescription, status, icon, text) => {
-      let message = problemFormDescription.querySelector("calcite-input-message");
-      message.innerText = text;
-      message.status = status;
-      message.icon = icon;
+    // Validation message
+    let setValidationMessage = (el, status, icon, text) => {
+      let messageEl = el.querySelector("calcite-input-message");
+      messageEl.innerText = text;
+      messageEl.status = status;
+      messageEl.icon = icon;
     }
 
     // BUSINESS - SET STATE
@@ -567,8 +569,7 @@ require([
       sketchLayer.graphics.removeAll(); // Remove graphic from map
       if (sketchViewModel) { sketchViewModel.cancel(); } // Reset sketchViewModel
       
-      formState.geometry = null;
-      console.log("State upraven, odstraněna geometry: ", formState);
+      setState("geometry", null);
     }
 
     // Active sketching point problem in map
@@ -584,14 +585,12 @@ require([
         if(e.state === "complete") {
           changeMessageInProblemToMapWindow(messageSelectPlaceSuccess, problemActionBar); 
           
-          formState.geometry = e.graphic;
-          console.log("State update, add geometry from sketch: ", formState);
+          setState("geometry", e.graphic);
         }
       });
       sketchViewModel.on("update", function(e) {
         
-        formState.geometry = e.graphic;
-        console.log("State update, change geometry from sketch: ", formState);
+        setState("geometry", e.graphic);
       });
     }
 
@@ -610,22 +609,14 @@ require([
       sketchLayer.graphics.add(graphic);
       changeMessageInProblemToMapWindow(messageSelectPlaceSuccess, problemActionBar); 
       
-      formState.geometry = graphic;
-      console.log("State update; add geometry from location: ", formState);
+      setState("geometry", graphic);
     }
 
-    // Category
-    let setCategory = (category) => {
-      formState.category = category;
-      console.log("State update - category: ", formState);
+    // Set state
+    let setState = (type, value) => {
+      formState[type] = value;
+      console.log(`State update - ${type}: `, formState);
     }
-
-    // Description
-    let setDescription = (description) => {
-      formState.description = description;
-      console.log("State update - description: ", formState);
-    }
-
 
     // BUSINESS - OTHER
     // Move locate graphic under závada graphic
@@ -641,4 +632,13 @@ require([
         });
       }
     }
+
+    // Email validation
+    const validateEmail = (email) => {
+      return String(email)
+        .toLowerCase()
+        .match(
+          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        );
+    };
 });
