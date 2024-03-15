@@ -297,8 +297,8 @@ body,
     padding-top: var(--problem-element-padding-top);
 }
 .problems-form .problem-form-section {
-    margin: 5px 0px;
-    padding: 5px 0px;
+    margin: 8px 0px;
+    padding: 8px 0px;
 }
 .problems-form .problem-question {
     margin-bottom: 8px;
