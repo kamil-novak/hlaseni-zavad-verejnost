@@ -149,7 +149,7 @@ require([
     let overlayEl = document.querySelector(".overlay");
     let problemFormCloseBtn = document.querySelector("#problems-form-container .problems-close");
     // Form
-    let problemFormCategory = document.querySelector("#problems-form-container .problem-forms-category");
+    let problemFormCategory = document.querySelector("#problems-form-container .problem-category");
     
     // APP lAYOUT ---
     // Header bar
@@ -397,6 +397,7 @@ require([
           });
         });
         // Form
+        // Category
         config.problemTyp.forEach((category) => {
           let categoryCardEl = document.createElement("calcite-card");
           let categoryImage = document.createElement("img");
@@ -409,13 +410,16 @@ require([
           categoryCardEl.append(categoryImage);
           categoryCardEl.append(categoryTitle);
           categoryCardEl.addEventListener("click", () => {
-            problemFormCategory.children[1].childNodes.forEach((card) => {
+            problemFormCategory.querySelectorAll("calcite-card").forEach((card) => {
               card.removeAttribute("selected");
             })
-            categoryCardEl.setAttribute("selected", "");
+            selectCategory(categoryCardEl);
+            setCategory(category);
           })
           problemFormCategory.children[1].append(categoryCardEl);
         })
+
+        // Close form
         problemFormCloseBtn.addEventListener("click", () => {
           closeProblemFormContainer();
         });
@@ -424,7 +428,6 @@ require([
             closeProblemFormContainer();
           }
         });
-        // problemFormCategory
 
         // Widgets positioning
         view.ui.add(locateWidget, "top-left", 0);
@@ -521,37 +524,42 @@ require([
       overlayEl.classList.remove("opened");
     }
 
-    // BUSINESS
+    // Category
+    let selectCategory = (categoryCardEl) => {
+      categoryCardEl.setAttribute("selected", "");
+    }
+
+    // BUSINESS - SET STATE
+    // Geometry
     // Reset sketch view model
     let resetSketchViewModel = () => {
       changeMessageInProblemToMapWindow(messageSelectPlace, problemWindowLocateBtn); 
       sketchLayer.graphics.removeAll(); // Remove graphic from map
       if (sketchViewModel) { sketchViewModel.cancel(); } // Reset sketchViewModel
+      
       formState.geometry = null;
       console.log("State upraven, odstraněna geometry: ", formState);
     }
 
     // Active sketching point problem in map
     let activateSketchingToMap = () => {
-      
       // Create model
       sketchViewModel = new SketchViewModel(sketchViewModelOptions);
-
       // Initialize sketching
       sketchViewModel.create("point");
-
       // Move locate graphic under závada graphic
       moveLocateGraphicUnderSketch()
-      
       // Events
       sketchViewModel.on("create", function(e) {
         if(e.state === "complete") {
           changeMessageInProblemToMapWindow(messageSelectPlaceSuccess, problemActionBar); 
+          
           formState.geometry = e.graphic;
           console.log("State update, add geometry from sketch: ", formState);
         }
       });
       sketchViewModel.on("update", function(e) {
+        
         formState.geometry = e.graphic;
         console.log("State update, change geometry from sketch: ", formState);
       });
@@ -559,9 +567,7 @@ require([
 
     // Geometry from location
     let placeSketchToMapDirectly = (e) => {
-
       sketchViewModel.cancel();
-      
       // Create map graphic
       let graphic = new Graphic({
         geometry: {
@@ -571,15 +577,20 @@ require([
         },
         symbol: sketchSymbol
       });
-
       sketchLayer.graphics.add(graphic);
-
       changeMessageInProblemToMapWindow(messageSelectPlaceSuccess, problemActionBar); 
-
+      
       formState.geometry = graphic;
       console.log("State update; add geometry from location: ", formState);
     }
 
+    // Category
+    let setCategory = (category) => {
+      formState.category = category.code;
+      console.log("State update, category selected: ", formState);
+    }
+
+    // BUSINESS - OTHER
     // Move locate graphic under závada graphic
     let moveLocateGraphicUnderSketch = () => {
       if (view.graphics) {

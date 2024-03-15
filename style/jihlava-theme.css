@@ -298,7 +298,7 @@ body,
 .problems-form .problem-question {
     margin-bottom: 8px;
 }
-.problems-form calcite-card {
+.problems-form .problem-category calcite-card {
     width: 30%;
     --calcite-card-accent-color-selected: var(--color-one);
 }
