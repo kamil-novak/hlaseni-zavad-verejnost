@@ -413,7 +413,7 @@ require([
             problemFormCategory.querySelectorAll("calcite-card").forEach((card) => {
               card.removeAttribute("selected");
             })
-            selectCategory(categoryCardEl);
+            selectCategory(categoryCardEl, category);
             setCategory(category);
           })
           problemFormCategory.children[1].append(categoryCardEl);
@@ -525,7 +525,11 @@ require([
     }
 
     // Category
-    let selectCategory = (categoryCardEl) => {
+    let selectCategory = (categoryCardEl, category) => {
+      let message = problemFormCategory.querySelector("calcite-input-message");
+      message.innerText = `Zvolen typ závady ${category.name}`;
+      message.status = "valid";
+      message.icon = "check";
       categoryCardEl.setAttribute("selected", "");
     }
 
