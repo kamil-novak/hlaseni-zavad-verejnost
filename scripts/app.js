@@ -439,7 +439,17 @@ require([
         })
         // Email
         problemFormEmail.querySelector("calcite-input").addEventListener("calciteInputInput", (e) => {
-          console.log(validateEmail(e.target.value));
+          if (e.target.value.length > 0) {
+            if(validateEmail(e.target.value)) {
+              setValidationMessage(problemFormEmail, "valid", "check", "e-mail vložen.")
+            }
+            else {
+              setValidationMessage(problemFormEmail, "invalid", "exclamation-mark-triangle", "Chybný e-mail.")
+            }
+          }
+          else {
+            setValidationMessage(problemFormEmail, "invalid", "exclamation-mark-triangle", "e-mail neuveden.")
+          }  
         })
 
         // Close form
