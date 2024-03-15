@@ -152,6 +152,12 @@ require([
     let problemFormCategory = document.querySelector("#problems-form-container .problem-category");
     let problemFormDescription = document.querySelector("#problems-form-container .problem-description");
     let problemFormEmail = document.querySelector("#problems-form-container .problem-email");
+    // Attachment
+    let problemFormAttachment = document.querySelector("#problems-form-container .problem-attachment");
+    let attachmentFormEl = document.getElementById("attachmentForm");
+		let attachmentInputEl = document.getElementById("attachmentInput");
+		let removeAttachmentBtn = document.getElementById("attachmentRemove");
+		let addAttachmentBtn = document.getElementById("addAttachmentBtn");
     
     // APP lAYOUT ---
     // Header bar
@@ -441,15 +447,41 @@ require([
         problemFormEmail.querySelector("calcite-input").addEventListener("calciteInputInput", (e) => {
           if (e.target.value.length > 0) {
             if(validateEmail(e.target.value)) {
-              setValidationMessage(problemFormEmail, "valid", "check", "e-mail vložen.")
+              setValidationMessage(problemFormEmail, "valid", "check", "e-mail vložen.");
+              setState("email", e.target.value)
             }
             else {
-              setValidationMessage(problemFormEmail, "invalid", "exclamation-mark-triangle", "Chybný e-mail.")
+              setValidationMessage(problemFormEmail, "invalid", "exclamation-mark-triangle", "Chybný e-mail.");
+              setState("email", null);
             }
           }
           else {
-            setValidationMessage(problemFormEmail, "invalid", "exclamation-mark-triangle", "e-mail neuveden.")
+            setValidationMessage(problemFormEmail, "invalid", "exclamation-mark-triangle", "e-mail neuveden.");
+            setState("email", null);
           }  
+        })
+        // Attachment
+        addAttachmentBtn.addEventListener("click", () => {
+          attachmentInputEl.click();
+        });
+        attachmentInputEl.addEventListener("change", (e) => {
+          if (e.target.files[0]) {
+            let file = e.target.files[0];
+            let fileType = file.type.split("/")[0]
+            if (fileType === "image") {
+                setState("attachment", attachmentFormEl);
+                afterAttachmentLoaded(file);
+            }
+            else {
+              setState("attachment", null);
+              afterBadFileLoaded();
+            }
+          }
+        })
+        // Remove attachment
+        removeAttachmentBtn.addEventListener("click", () => {
+          setState("attachment", null);
+          removeAttachment();		
         })
 
         // Close form
@@ -563,6 +595,31 @@ require([
       categoryCardEl.setAttribute("selected", "");
     }
 
+    // Attachment
+    // Remove attachement
+    const removeAttachment = () => {
+      setValidationMessage(problemFormAttachment, "invalid", "exclamation-mark-triangle", "Fotografie nepřipojena.")
+      removeAttachmentBtn.style.display = "none";
+      attachmentFormEl.reset();
+    }
+
+    // DOM after image loaded
+    const afterAttachmentLoaded = (imageFile) => {
+      removeAttachmentBtn.style.display = "inline-block";
+      addInfoAboutImageToInput(imageFile);
+    }
+
+    // DOM after bad file loaded
+    const afterBadFileLoaded = () => {
+      setValidationMessage(problemFormAttachment, "invalid", "exclamation-mark-triangle", "Nepodporovaný soubor!")
+      removeAttachmentBtn.style.display = "none";
+    }
+
+    // Info about added image
+    const addInfoAboutImageToInput = (imageFile) => {
+      setValidationMessage(problemFormAttachment, "valid", "check", `${imageFile.name} (${formatFileSize(imageFile.size)})`)
+    }
+
     // Validation message
     let setValidationMessage = (el, status, icon, text) => {
       let messageEl = el.querySelector("calcite-input-message");
@@ -570,8 +627,8 @@ require([
       messageEl.status = status;
       messageEl.icon = icon;
     }
-
-    // BUSINESS - SET STATE
+    
+    // BUSINESS - MAIN
     // Geometry
     // Reset sketch view model
     let resetSketchViewModel = () => {
@@ -644,11 +701,21 @@ require([
     }
 
     // Email validation
-    const validateEmail = (email) => {
+    let validateEmail = (email) => {
       return String(email)
         .toLowerCase()
         .match(
           /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
         );
     };
+
+    // Format file size
+    let formatFileSize = (size) => {
+      if(size < 1000000){
+        return(Math.floor(size/1000) + ' kB');
+      }
+      else {
+        return(Math.floor(size/1000000) + ' MB');  
+      }
+    } 
 });

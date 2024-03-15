@@ -312,6 +312,11 @@ body,
     width: 30%;
     --calcite-card-accent-color-selected: var(--color-one);
 }
+/* Attachment */
+#attachmentRemove {
+    margin-top: 5px;
+} 
+
 
 /* LOADING SPINNER */
 @keyframes spinner {

@@ -61,18 +61,39 @@
             <calcite-input-message scale="m"></calcite-input-message>
           </div>
           <div class="problem-form-section problem-description">
-            <div class="problem-question">Popiště závadu</div>
+            <div class="problem-question">Popište závadu</div>
             <calcite-text-area max-length="500" placeholder="Popis závady..." resize="none" rows="4" scale="l">
             </calcite-text-area>
             <calcite-input-message scale="m"></calcite-input-message>
           </div>
           <div class="problem-form-section problem-email">
-            <div class="problem-question">Váš e-mail</div>
+            <div class="problem-question">Uveďte váš e-mail</div>
             <calcite-input input-mode="email" scale="l" type="email" icon="envelope">
             </calcite-input>
             <calcite-input-message scale="m"></calcite-input-message>
           </div>
-          <div class="problem-forms-attachment"></div>
+          <div class="problem-form-section problem-attachment">
+            <div class="problem-question">Připojte fotografii závady</div>
+            <div class="attachment-container">
+              <form id="attachmentForm">
+                <calcite-button icon-start="camera-plus" id="addAttachmentBtn" scale="l" width="full" kind="neutral">Přidat</calcite-button>
+                <input 
+                  id="attachmentInput" 
+                  type="file" 
+                  name="attachment" 
+                  accept="image/*" 
+                  style="display: none">
+                  <calcite-input-message scale="m"></calcite-input-message>
+                  <calcite-button
+                    id="attachmentRemove" 
+                    icon-start="trash"
+                    scale="s"
+                    kind="neutral" 
+                    style="display: none">Smazat fotografii
+                  </calcite-button>
+              </form>
+            </div>
+          </div>
         </div>
       </div>
     </div>
