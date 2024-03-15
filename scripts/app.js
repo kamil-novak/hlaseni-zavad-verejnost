@@ -139,7 +139,6 @@ require([
     goToFormBtn.setAttribute("title", "Pokračovat");
     goToFormBtn.innerText = "Pokračovat";
     goToFormBtn.addEventListener("click", () => {
-      console.log("Pokračovat");
       showProblemFormContainer();
     });
     problemActionBar.append(goToFormBtn);
@@ -549,12 +548,12 @@ require([
         if(e.state === "complete") {
           changeMessageInProblemToMapWindow(messageSelectPlaceSuccess, problemActionBar); 
           formState.geometry = e.graphic;
-          console.log("State upraven, vložena geometry: ", formState);
+          console.log("State update, add geometry from sketch: ", formState);
         }
       });
       sketchViewModel.on("update", function(e) {
         formState.geometry = e.graphic;
-        console.log("State upraven, změněna geometry: ", formState);
+        console.log("State update, change geometry from sketch: ", formState);
       });
     }
 
@@ -578,7 +577,7 @@ require([
       changeMessageInProblemToMapWindow(messageSelectPlaceSuccess, problemActionBar); 
 
       formState.geometry = graphic;
-      console.log("State upraven, vložena geometry: ", formState);
+      console.log("State update; add geometry from location: ", formState);
     }
 
     // Move locate graphic under závada graphic
