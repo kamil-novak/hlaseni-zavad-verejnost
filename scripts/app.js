@@ -150,6 +150,7 @@ require([
     let problemFormCloseBtn = document.querySelector("#problems-form-container .problems-close");
     // Form
     let problemFormCategory = document.querySelector("#problems-form-container .problem-category");
+    let problemFormDescription = document.querySelector("#problems-form-container .problem-description");
     
     // APP lAYOUT ---
     // Header bar
@@ -414,9 +415,26 @@ require([
               card.removeAttribute("selected");
             })
             selectCategory(categoryCardEl, category);
-            setCategory(category);
+            setCategory(category.code);
           })
           problemFormCategory.children[1].append(categoryCardEl);
+        })
+        // Description
+        problemFormDescription.querySelector("calcite-text-area").addEventListener("calciteTextAreaInput", (e) => {
+          let actualTextLength = e.target.value.length;
+          let maxTextLength = e.target.maxLength;
+          if (actualTextLength > 0 && actualTextLength <= maxTextLength) {
+            messageDescription(problemFormDescription, "valid", "check", "Popis závady vložen.");
+            setDescription(e.target.value);
+          }
+          else if (actualTextLength === 0) {
+            messageDescription(problemFormDescription, "invalid", "exclamation-mark-triangle", "Chybí popis závady.");
+            setDescription(null);
+          }
+          else if (actualTextLength > maxTextLength) {
+            messageDescription(problemFormDescription, "invalid", "exclamation-mark-triangle", "Překročen povolený počet znaků pro popis závady.");
+            setDescription(null);
+          }
         })
 
         // Close form
@@ -533,6 +551,14 @@ require([
       categoryCardEl.setAttribute("selected", "");
     }
 
+    // Description
+    let messageDescription = (problemFormDescription, status, icon, text) => {
+      let message = problemFormDescription.querySelector("calcite-input-message");
+      message.innerText = text;
+      message.status = status;
+      message.icon = icon;
+    }
+
     // BUSINESS - SET STATE
     // Geometry
     // Reset sketch view model
@@ -590,9 +616,16 @@ require([
 
     // Category
     let setCategory = (category) => {
-      formState.category = category.code;
-      console.log("State update, category selected: ", formState);
+      formState.category = category;
+      console.log("State update - category: ", formState);
     }
+
+    // Description
+    let setDescription = (description) => {
+      formState.description = description;
+      console.log("State update - description: ", formState);
+    }
+
 
     // BUSINESS - OTHER
     // Move locate graphic under závada graphic
