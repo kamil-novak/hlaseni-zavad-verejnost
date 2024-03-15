@@ -26,6 +26,15 @@ require([
     // GLOBAL VARIABLES ---
     let sketchViewModel = null;
 
+    // Form state
+    let formState = {
+      geometry: null,
+      category: null,
+      description: null,
+      email: null,
+      attachment: null
+    };
+
     // DOM ---
     // MESSAGES
     const messageSelectPlace = `
@@ -519,6 +528,8 @@ require([
       changeMessageInProblemToMapWindow(messageSelectPlace, problemWindowLocateBtn); 
       sketchLayer.graphics.removeAll(); // Remove graphic from map
       if (sketchViewModel) { sketchViewModel.cancel(); } // Reset sketchViewModel
+      formState.geometry = null;
+      console.log("State upraven, odstraněna geometry: ", formState);
     }
 
     // Active sketching point problem in map
@@ -537,14 +548,17 @@ require([
       sketchViewModel.on("create", function(e) {
         if(e.state === "complete") {
           changeMessageInProblemToMapWindow(messageSelectPlaceSuccess, problemActionBar); 
-          console.log("bod závady vložen");
+          formState.geometry = e.graphic;
+          console.log("State upraven, vložena geometry: ", formState);
         }
       });
-      sketchViewModel.on("update", function() {
-        console.log("bod závady přesunut");
+      sketchViewModel.on("update", function(e) {
+        formState.geometry = e.graphic;
+        console.log("State upraven, změněna geometry: ", formState);
       });
     }
 
+    // Geometry from location
     let placeSketchToMapDirectly = (e) => {
 
       sketchViewModel.cancel();
@@ -563,7 +577,8 @@ require([
 
       changeMessageInProblemToMapWindow(messageSelectPlaceSuccess, problemActionBar); 
 
-      console.log("bod závady vložen");
+      formState.geometry = graphic;
+      console.log("State upraven, vložena geometry: ", formState);
     }
 
     // Move locate graphic under závada graphic
