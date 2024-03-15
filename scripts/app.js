@@ -591,7 +591,7 @@ require([
 
     // Category
     let selectCategory = (categoryCardEl, category) => {
-      setValidationMessage(problemFormCategory, "valid", "check", `Zvolen typ závady ${category.name}`)
+      setValidationMessage(problemFormCategory, "valid", "check", `Zvolen typ závady: ${category.name}`)
       categoryCardEl.setAttribute("selected", "");
     }
 
