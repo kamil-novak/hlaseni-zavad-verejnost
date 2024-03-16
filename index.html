@@ -58,19 +58,19 @@
           <div class="problem-form-section problem-category">
             <div class="problem-question">Zvolte typ závady</div>
             <calcite-card-group label="label" scale="s"></calcite-card-group>
-            <calcite-input-message scale="m"></calcite-input-message>
+            <calcite-input-message icon="information" status="invalid" scale="m">Typ závady nezvolen.</calcite-input-message>
           </div>
           <div class="problem-form-section problem-description">
             <div class="problem-question">Popište závadu</div>
             <calcite-text-area max-length="500" placeholder="Popis závady..." resize="none" rows="4" scale="l">
             </calcite-text-area>
-            <calcite-input-message scale="m"></calcite-input-message>
+            <calcite-input-message icon="information" status="invalid" scale="m">Popis závady nevložen.</calcite-input-message>
           </div>
           <div class="problem-form-section problem-email">
             <div class="problem-question">Uveďte váš e-mail</div>
             <calcite-input input-mode="email" scale="l" type="email" icon="envelope">
             </calcite-input>
-            <calcite-input-message scale="m"></calcite-input-message>
+            <calcite-input-message icon="information" status="invalid" scale="m">e-mail nevložen.</calcite-input-message>
           </div>
           <div class="problem-form-section problem-attachment">
             <div class="problem-question">Připojte fotografii závady</div>
@@ -83,7 +83,7 @@
                   name="attachment" 
                   accept="image/*" 
                   style="display: none">
-                  <calcite-input-message scale="m"></calcite-input-message>
+                  <calcite-input-message icon="information" status="invalid" scale="m">Fotografie nepřipojena.</calcite-input-message>
                   <calcite-button
                     id="attachmentRemove" 
                     icon-start="trash"
