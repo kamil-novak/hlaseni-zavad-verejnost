@@ -310,6 +310,7 @@ body,
 /* Category */
 .problems-form .problem-category calcite-card {
     width: 30%;
+    max-width: 160px;
     --calcite-card-accent-color-selected: var(--color-one);
 }
 /* Attachment */
