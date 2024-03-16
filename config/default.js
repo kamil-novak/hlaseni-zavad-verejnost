@@ -15,6 +15,9 @@ var config = {
     // ID webové mapy
     webmapId: "6eab4160ae6a40be8baf4aa7dfe04b15",
 
+    // Služba pro editaci (vrstva)
+    editFeatureUrl: "https://gis.jihlava-city.cz/server1/rest/services/verejnost/verejnost_hlaseni_zavad/FeatureServer/0",
+
     // Souřadnicový systém webov mapy
     webmapSpatialReference: 5514,
 

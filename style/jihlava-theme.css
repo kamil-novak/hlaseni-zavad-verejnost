@@ -296,8 +296,34 @@ body,
     height: 100%;
     z-index: 2;
     overflow-y: scroll;
+    position: relative;
 }
-#problems-form-container.mobile-layout {
+.problem-loading {
+    position: fixed;
+    right: 0px;
+    top: 45px;
+    height: 100%;
+    width: 60%;
+    z-index: 3;
+    background-color: rgba(255,255,255,.8);
+}
+.problem-loading .spinner-main {
+    width: 200px;
+    height: 200px;
+    display: inline-block;
+    overflow: hidden;
+    background: none;
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.problem-loading .spinner div {
+    border: 0.5em solid var(--color-one);
+    border-top-color: transparent;
+}
+#problems-form-container.mobile-layout, 
+.problem-loading.mobile-layout {
     width: 100%;
 }
 .problems-form {

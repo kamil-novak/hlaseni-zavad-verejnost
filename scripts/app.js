@@ -147,6 +147,7 @@ require([
     // Container
     let problemFormContainer = document.getElementById("problems-form-container");
     let overlayEl = document.querySelector(".overlay");
+    let problemLoading = document.querySelector(".problem-loading");
     let problemFormCloseBtn = document.querySelector("#problems-form-container .problems-close");
     let problemSendBtn = document.querySelector("#problems-form-container .problems-footer calcite-button");
     // Form
@@ -267,6 +268,12 @@ require([
       pointSymbol: sketchSymbol,
       defaultUpdateOptions: {highlightOptions: {enabled: false}}
     };
+
+    // Edit layer
+    const EditLayer = new FeatureLayer({
+      url: config.editFeatureUrl,
+      outFields: ["*"]
+    })
     
     // Locate layer
     const locateLayer = new GraphicsLayer();
@@ -479,12 +486,10 @@ require([
             }
           }
         })
-        // Remove attachment
         removeAttachmentBtn.addEventListener("click", () => {
           setState("attachment", null);
           removeAttachment();		
         })
-
         // Close form
         problemFormCloseBtn.addEventListener("click", () => {
           closeProblemFormContainer();
@@ -494,6 +499,21 @@ require([
             closeProblemFormContainer();
           }
         });
+        // Send form
+        problemSendBtn.addEventListener("click", () => {
+          let featureForSend = createFeatureForSend();
+          addLoadingScreenOverForm();
+          EditLayer.applyEdits( {addFeatures: [featureForSend]} )
+            .then((result) => {
+              console.log(result.addFeatureResults[0].globalId);
+              removeLoadingScreenOverForm();
+              // TODO: odeslání přílohy
+              resetApp();
+            })
+            .catch((error) => {
+              console.log(error);
+            })
+        })
 
         // Widgets positioning
         view.ui.add(locateWidget, "top-left", 0);
@@ -535,6 +555,7 @@ require([
             // Add problem button
             addProblemContainer.classList.add("mobile-layout");
             problemFormContainer.classList.add("mobile-layout");
+            problemLoading.classList.add("mobile-layout");
             view.ui.add(addProblemContainer, "manual", 1);
           } 
           else {
@@ -546,6 +567,7 @@ require([
             // Add problem button
             addProblemContainer.classList.remove("mobile-layout");
             problemFormContainer.classList.remove("mobile-layout");
+            problemLoading.classList.remove("mobile-layout");
             view.ui.add(addProblemContainer, "bottom-right", 1);
           }
         }, 
@@ -629,7 +651,13 @@ require([
       messageEl.icon = icon;
     }
 
-    
+    // Loading over form
+    let addLoadingScreenOverForm = () => {
+      problemLoading.style.display = "block";
+    }
+    let removeLoadingScreenOverForm = () => {
+      problemLoading.style.display = "none";
+    }
     
     // BUSINESS - MAIN
     // Geometry
@@ -659,8 +687,8 @@ require([
         }
       });
       sketchViewModel.on("update", function(e) {
-        
-        setState("geometry", e.graphic);
+
+        setState("geometry", e.graphics[0]);
       });
     }
 
@@ -695,6 +723,23 @@ require([
         }
       }
       valid ? problemSendBtn.removeAttribute("disabled") : problemSendBtn.setAttribute("disabled", "");
+    }
+
+    // Create feature for send 
+    let createFeatureForSend = () => {
+      let feature = formState.geometry;
+      feature.setAttribute("typ", formState.category);
+      feature.setAttribute("email", formState.email);
+      feature.setAttribute("poznamka", formState.description);
+      return(feature)
+    }
+
+    let resetApp = () => {
+      console.log("TODO: reset state");
+      console.log("TODO: reset form input");
+      console.log("TODO: close form");
+      console.log("TODO: close window");
+      console.log("TODO: success message");
     }
 
     // Set state
