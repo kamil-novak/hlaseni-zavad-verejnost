@@ -1,11 +1,12 @@
 {
-  "name": "Poloha vozidel MHD měst Mostu a Litvínova",
-  "short_name": "MHD Most a Litvínov",
-  "description": "Poloha vozidel, zastávkové odjezdy a mimořádné situace MHD měst Mostu a Litvínova v interaktivní mapě.",
-  "author": "Kamil Novák, Oddělení GIS, OIS, Magistrát města Mostu",
-  "start_url": "/app/mhd",
+  "name": "Hlášení závad ve městě",
+  "short_name": "Hlášení závad",
+  "description": "Hlášení závad na území města Jihlava pro veřejnost.",
+  "author": "Kamil Novák, OIS, Magistrát města Jihlava",
+  "start_url": "/",
+  "start_url_": "/app/hlaseni-zavad",
   "display": "standalone",
-  "background_color": "#425CC7",
+  "background_color": "#B52F1F",
   "theme_color": "#ffffff",
   "orientation": "any",
   "icons": [
