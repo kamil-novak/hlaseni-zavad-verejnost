@@ -65,7 +65,31 @@ require([
     const messageInitialFormDescription = "Popis závady nevložen.";
     const messageInitialFormEmail = "e-mail nevložen.";
     const messageInitialFormAttachment = "Fotografie nepřipojena.";
-    const problemSendedSuccess = `Závada byla vložena. Děkujeme.`
+    const problemSendedSuccess = `
+      <div class="form-result-container">
+        <div class="form-result-image-container">
+          <img src="images/form-success.svg">
+        </div>
+        <div class="form-result-text">
+          Závada byla vložena. Děkujeme.
+        </div>
+        <div class="form-result-btn">
+          <calcite-button icon-start="caret-right">Pokračovat</calcite-button>
+        </div>
+      </div>`
+    const problemSendedError = `
+    <div class="form-result-container">
+      <div class="form-result-image-container">
+        <img src="images/form-error.svg">
+      </div>
+      <div class="form-result-text">
+        Závada se nepodařilo vložit. Za komplikace se omlouváme.
+      </div>
+      <div class="form-result-btn">
+        <calcite-button icon-start="caret-right">Pokračovat</calcite-button>
+      </div>
+    </div>`
+      
 
     // PROBLEM WINDOW
     // Container
@@ -526,9 +550,6 @@ require([
                     removeLoadingScreenOverForm();
                     resetApp();
                     addResultScreenOverForm(problemSendedSuccess);
-                    setTimeout(() => {
-                      console.log("zavřít");
-                    }, 1000)
                   }, 1000)
 
                   
@@ -536,10 +557,16 @@ require([
               })
             })
             .catch((error) => {
-              removeLoadingScreenOverForm();
-              resetApp();
-              addResultScreenOverForm("TODO");
+              setTimeout(() => {
+                removeLoadingScreenOverForm();
+                resetApp();
+                addResultScreenOverForm(problemSendedError);
+              }, 1000)
             })
+        })
+        problemResultScreen.addEventListener("click", () => {
+          removeResultScreenOverForm();
+          closeProblemFormContainer();
         })
 
         // Widgets positioning
@@ -583,6 +610,7 @@ require([
               addProblemContainer.classList.add("mobile-layout");
               problemFormContainer.classList.add("mobile-layout");
               problemLoading.classList.add("mobile-layout");
+              problemResultScreen.classList.add("mobile-layout");
               view.ui.add(addProblemContainer, "manual", 1);
             } 
             else {
@@ -595,6 +623,7 @@ require([
               addProblemContainer.classList.remove("mobile-layout");
               problemFormContainer.classList.remove("mobile-layout");
               problemLoading.classList.remove("mobile-layout");
+              problemResultScreen.classList.remove("mobile-layout");
               view.ui.add(addProblemContainer, "bottom-right", 1);
             }
           }, 
@@ -654,6 +683,7 @@ require([
       overlayEl.classList.add("opened");
     }
     let closeProblemFormContainer = () => {
+      problemFormContainer.scrollTo(0,0);
       overlayEl.classList.remove("opened");
     }
 

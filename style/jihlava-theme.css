@@ -220,7 +220,8 @@ body,
     box-sizing: border-box;
 }
 .problems-map-container calcite-button,
-.problems-footer calcite-button {
+.problems-footer calcite-button, 
+.form-result-container .form-result-btn calcite-button {
     --calcite-color-brand: var(--color-one);
     --calcite-color-brand-hover: var(--color-two);
     --calcite-color-brand-press: var(--color-two);
@@ -328,7 +329,8 @@ body,
     border-top-color: transparent;
 }
 #problems-form-container.mobile-layout, 
-.problem-loading.mobile-layout {
+.problem-loading.mobile-layout,
+.problem-result-screen.mobile-layout {
     width: 100%;
 }
 .problem-result-screen {
@@ -359,6 +361,29 @@ body,
     margin-top: 5px;
 } 
 
+/* Form result */
+.form-result-container {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    font-size: 1rem;
+    color: var(--color-four);
+}
+.form-result-container .form-result-image-container {
+    max-width: 200px;
+    width: 90%;
+    height: auto;
+}
+.form-result-container .form-result-image-container img {
+    width: 100%;
+    height: auto;
+}
+.form-result-container .form-result-text {
+    text-align: center;
+    margin-bottom: 15px;
+}
 
 /* LOADING SPINNER */
 @keyframes spinner {
