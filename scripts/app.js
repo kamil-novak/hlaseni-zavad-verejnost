@@ -61,6 +61,11 @@ require([
         <calcite-icon class="problems-map-check-icon" icon="check"></calcite-icon> 
         Místo závady úspěšně vybráno.
       </div>`
+    const messageInitialFormCategory = "Typ závady nezvolen";
+    const messageInitialFormDescription = "Popis závady nevložen.";
+    const messageInitialFormEmail = "e-mail nevložen.";
+    const messageInitialFormAttachment = "Fotografie nepřipojena.";
+    
 
     // PROBLEM WINDOW
     // Container
@@ -435,6 +440,7 @@ require([
           })
           problemFormCategory.children[1].append(categoryCardEl);
         })
+        setValidationMessage(problemFormCategory, "invalid", "information", messageInitialFormCategory)
         // Description
         problemFormDescription.querySelector("calcite-text-area").addEventListener("calciteTextAreaInput", (e) => {
           let actualTextLength = e.target.value.length;
@@ -452,6 +458,7 @@ require([
             setState("description", null);
           }
         })
+        setValidationMessage(problemFormDescription, "invalid", "information", messageInitialFormDescription);
         // Email
         problemFormEmail.querySelector("calcite-input").addEventListener("calciteInputInput", (e) => {
           if (e.target.value.length > 0) {
@@ -465,10 +472,11 @@ require([
             }
           }
           else {
-            setValidationMessage(problemFormEmail, "invalid", "exclamation-mark-triangle", "e-mail neuveden.");
+            setValidationMessage(problemFormEmail, "invalid", "exclamation-mark-triangle", messageInitialFormEmail);
             setState("email", null);
           }  
         })
+        setValidationMessage(problemFormEmail, "invalid", "information", messageInitialFormEmail);
         // Attachment
         addAttachmentBtn.addEventListener("click", () => {
           attachmentInputEl.click();
@@ -491,6 +499,7 @@ require([
           setState("attachment", null);
           removeAttachment();		
         })
+        setValidationMessage(problemFormAttachment, "invalid", "information", messageInitialFormAttachment)
         // Close form
         problemFormCloseBtn.addEventListener("click", () => {
           closeProblemFormContainer();
@@ -654,7 +663,7 @@ require([
     // Attachment
     // Remove attachement
     const removeAttachment = () => {
-      setValidationMessage(problemFormAttachment, "invalid", "exclamation-mark-triangle", "Fotografie nepřipojena.")
+      setValidationMessage(problemFormAttachment, "invalid", "exclamation-mark-triangle", messageInitialFormAttachment)
       removeAttachmentBtn.style.display = "none";
       attachmentFormEl.reset();
     }
@@ -698,7 +707,16 @@ require([
       document.querySelectorAll(".problem-input").forEach((input) => {
         input.value = null;
       });
+
       attachmentFormEl.reset();
+      removeAttachment();	
+
+      setValidationMessage(problemFormCategory, "invalid", "information", messageInitialFormCategory)
+      setValidationMessage(problemFormDescription, "invalid", "information", messageInitialFormDescription);
+      setValidationMessage(problemFormEmail, "invalid", "information", messageInitialFormEmail);
+      setValidationMessage(problemFormAttachment, "invalid", "information", messageInitialFormAttachment);
+
+      closeAddProblemToMapWindow();
     }
     
     // BUSINESS - MAIN
