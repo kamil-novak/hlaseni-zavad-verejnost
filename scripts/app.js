@@ -26,6 +26,9 @@ require([
     // GLOBAL VARIABLES ---
     let sketchViewModel = null;
 
+    // Sketching state
+    let sketchingState = false;
+
     // Form state
     let formState = {
       geometry: null,
@@ -526,60 +529,74 @@ require([
         // WATCHING EVENTS
         // Layers visibility
         reactiveUtils.watch(function() { return([map.basemap]) }, 
-        ([basemap]) => {
-          if (basemap.title === 'Letecká mapa') {
+          ([basemap]) => {
+            if (basemap.title === 'Letecká mapa') {
 
-            OperationalLayer_2 ? OperationalLayer_2.visible = true : "";
-            OperationalLayer_3 ? OperationalLayer_3.visible = true : "";
+              OperationalLayer_2 ? OperationalLayer_2.visible = true : "";
+              OperationalLayer_3 ? OperationalLayer_3.visible = true : "";
 
-          } 
-          else {
-            OperationalLayer_2 ? OperationalLayer_2.visible = false : "";
-            OperationalLayer_3 ? OperationalLayer_3.visible = false : "";
-          }
-        }, 
-        {
-          initial: true
-        }
-      ); 
-
-      // Elements resizing and positioning
-      reactiveUtils.watch(function() { return([view.width, view.height]) }, 
-        ([width, height]) => {
-          if (width < 545) {
-            // About widget
-            if (height < 1130) {
-              infoNode.style.maxHeight = "none";
+            } 
+            else {
+              OperationalLayer_2 ? OperationalLayer_2.visible = false : "";
+              OperationalLayer_3 ? OperationalLayer_3.visible = false : "";
             }
-
-            // Add problem button
-            addProblemContainer.classList.add("mobile-layout");
-            problemFormContainer.classList.add("mobile-layout");
-            problemLoading.classList.add("mobile-layout");
-            view.ui.add(addProblemContainer, "manual", 1);
-          } 
-          else {
-            // About
-            if (height <= 1130) {
-              infoNode.style.maxHeight = (height - 350) + "px";
+            }, 
+            {
+              initial: true
             }
+        ); 
 
-            // Add problem button
-            addProblemContainer.classList.remove("mobile-layout");
-            problemFormContainer.classList.remove("mobile-layout");
-            problemLoading.classList.remove("mobile-layout");
-            view.ui.add(addProblemContainer, "bottom-right", 1);
+        // Elements resizing and positioning
+        reactiveUtils.watch(function() { return([view.width, view.height]) }, 
+          ([width, height]) => {
+            if (width < 545) {
+              // About widget
+              if (height < 1130) {
+                infoNode.style.maxHeight = "none";
+              }
+
+              // Add problem button
+              addProblemContainer.classList.add("mobile-layout");
+              problemFormContainer.classList.add("mobile-layout");
+              problemLoading.classList.add("mobile-layout");
+              view.ui.add(addProblemContainer, "manual", 1);
+            } 
+            else {
+              // About
+              if (height <= 1130) {
+                infoNode.style.maxHeight = (height - 350) + "px";
+              }
+
+              // Add problem button
+              addProblemContainer.classList.remove("mobile-layout");
+              problemFormContainer.classList.remove("mobile-layout");
+              problemLoading.classList.remove("mobile-layout");
+              view.ui.add(addProblemContainer, "bottom-right", 1);
+            }
+          }, 
+          {
+            initial: true
           }
-        }, 
-        {
-          initial: true
-        }
-      ); 
+        ); 
 
-      // Locate
-      locateWidget.on("locate", () => {
-        moveLocateGraphicUnderSketch();
-      })
+        // Disable sketching when map pan
+        reactiveUtils.watch(function() { return([view.interacting]) }, 
+          ([interacting]) => {
+            if(sketchingState === true) {
+              if (interacting ===  true) {
+                resetSketchViewModel();
+              } 
+              else {
+                activateSketchingToMap();
+              }
+            }
+          }
+        ); 
+
+        // Locate
+        locateWidget.on("locate", () => {
+          moveLocateGraphicUnderSketch();
+        })
     });
 
     // FUNCTIONS ---
@@ -589,6 +606,8 @@ require([
     let showAddProblemToMapWindow = () => {
       addProblemContainer.prepend(problemWindowContainer);
       addProblemBtn.style.display = "none";
+
+      sketchingState = true;
     }
 
     // Close window for adding problem point to map
@@ -596,6 +615,8 @@ require([
       problemWindowContainer.remove(); // Remove window for adding point
       addProblemBtn.style.display = "flex"; // Enable create button
       resetSketchViewModel();
+      
+      sketchingState = false;
     }
 
     let changeMessageInProblemToMapWindow = (message, actionBar) => {
@@ -666,7 +687,7 @@ require([
       changeMessageInProblemToMapWindow(messageSelectPlace, problemWindowLocateBtn); 
       sketchLayer.graphics.removeAll(); // Remove graphic from map
       if (sketchViewModel) { sketchViewModel.cancel(); } // Reset sketchViewModel
-      
+
       setState("geometry", null);
     }
 
@@ -680,6 +701,7 @@ require([
       moveLocateGraphicUnderSketch()
       // Events
       sketchViewModel.on("create", function(e) {
+        console.log(e.state);
         if(e.state === "complete") {
           changeMessageInProblemToMapWindow(messageSelectPlaceSuccess, problemActionBar); 
           
