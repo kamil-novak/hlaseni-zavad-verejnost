@@ -508,13 +508,21 @@ require([
           addLoadingScreenOverForm();
           EditLayer.applyEdits( {addFeatures: [featureForSend]} )
             .then((result) => {
-              console.log(result.addFeatureResults[0].globalId);
-              removeLoadingScreenOverForm();
-              // TODO: odeslání přílohy
-              resetApp();
+              let featureId = result.addFeatureResults[0].globalId;
+              EditLayer.queryFeatures({
+                where: `globalid='${featureId}'`,
+                outFields: ["*"]
+              }).then((result) => {
+                EditLayer.addAttachment(result.features[0], formState.attachment).then((result) => {
+                  removeLoadingScreenOverForm();
+                  resetApp();
+                })
+              })
             })
             .catch((error) => {
               console.log(error);
+              removeLoadingScreenOverForm();
+              resetApp();
             })
         })
 
