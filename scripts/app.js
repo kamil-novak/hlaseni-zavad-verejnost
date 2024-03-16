@@ -74,7 +74,7 @@ require([
           Závada byla vložena. Děkujeme.
         </div>
         <div class="form-result-btn">
-          <calcite-button scale="l" icon-start="caret-right">Pokračovat</calcite-button>
+          <calcite-button scale="l" icon-start="caret-right" class="form-result-calcite-btn">Pokračovat</calcite-button>
         </div>
       </div>`
     const problemSendedError = `
@@ -86,7 +86,7 @@ require([
         Závada se nepodařilo vložit. Za komplikace se omlouváme.
       </div>
       <div class="form-result-btn">
-        <calcite-button scale="l" icon-start="caret-right">Pokračovat</calcite-button>
+        <calcite-button scale="l" icon-start="caret-right" class="form-result-calcite-btn">Pokračovat</calcite-button>
       </div>
     </div>`
       
@@ -532,6 +532,9 @@ require([
         overlayEl.addEventListener("click", (e) => {
           if(e.target === overlayEl) {
             closeProblemFormContainer();
+            if(problemResultScreen.style.display === "block") {
+              removeResultScreenOverForm();
+            }
           }
         });
         // Send form
@@ -564,9 +567,11 @@ require([
               }, 1000)
             })
         })
-        problemResultScreen.addEventListener("click", () => {
-          removeResultScreenOverForm();
-          closeProblemFormContainer();
+        problemResultScreen.addEventListener("click", (e) => {
+          if(e.target.classList.contains("form-result-calcite-btn")) {
+            removeResultScreenOverForm();
+            closeProblemFormContainer();
+          }
         })
 
         // Widgets positioning
@@ -847,9 +852,6 @@ require([
     let resetApp = () => {
       resetState();
       resetForm();
-      console.log("TODO: close form");
-      console.log("TODO: close window");
-      console.log("TODO: success message");
     }
 
     // Set state
