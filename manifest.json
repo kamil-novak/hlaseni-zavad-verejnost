@@ -3,10 +3,10 @@
   "short_name": "Hlášení závad",
   "description": "Hlášení závad na území města Jihlava pro veřejnost.",
   "author": "Kamil Novák, OIS, Magistrát města Jihlava",
-  "start_url": "/",
+  "start_url": "/hlaseni-zavad-verejnost",
   "start_url_": "/app/hlaseni-zavad",
   "display": "standalone",
-  "background_color": "#B52F1F",
+  "background_color": "#CA1517",
   "theme_color": "#ffffff",
   "orientation": "any",
   "icons": [
