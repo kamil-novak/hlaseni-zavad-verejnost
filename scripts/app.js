@@ -148,6 +148,7 @@ require([
     let problemFormContainer = document.getElementById("problems-form-container");
     let overlayEl = document.querySelector(".overlay");
     let problemFormCloseBtn = document.querySelector("#problems-form-container .problems-close");
+    let problemSendBtn = document.querySelector("#problems-form-container .problems-footer calcite-button");
     // Form
     let problemFormCategory = document.querySelector("#problems-form-container .problem-category");
     let problemFormDescription = document.querySelector("#problems-form-container .problem-description");
@@ -627,6 +628,8 @@ require([
       messageEl.status = status;
       messageEl.icon = icon;
     }
+
+    
     
     // BUSINESS - MAIN
     // Geometry
@@ -679,9 +682,25 @@ require([
       setState("geometry", graphic);
     }
 
+    // Validate send form button
+    let validateSendButton = () => {
+      let valid = false;
+      for (let prop in formState) {
+        if (formState[prop] === null) {
+            valid = false;
+            break;
+        }
+        else {
+          valid = true;
+        }
+      }
+      valid ? problemSendBtn.removeAttribute("disabled") : problemSendBtn.setAttribute("disabled", "");
+    }
+
     // Set state
     let setState = (type, value) => {
       formState[type] = value;
+      validateSendButton();
       console.log(`State update - ${type}: `, formState);
     }
 

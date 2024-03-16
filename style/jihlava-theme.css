@@ -181,6 +181,11 @@ body,
     color: var(--color-four);
     border-bottom: 1px solid var(--color-five);
 }
+.problems-footer {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--color-five);
+}
 .problems-body {
     color: var(--color-six);
     padding-top: var(--problem-element-padding-top);
@@ -214,14 +219,16 @@ body,
     left: 0px;
     box-sizing: border-box;
 }
-.problems-map-container calcite-button {
+.problems-map-container calcite-button,
+.problems-footer calcite-button {
     --calcite-color-brand: var(--color-one);
     --calcite-color-brand-hover: var(--color-two);
     --calcite-color-brand-press: var(--color-two);
     margin: auto;
     width: 100%;
 }
-.problems-map-container.mobile-layout calcite-button {
+.problems-map-container.mobile-layout calcite-button,
+.problems-footer calcite-button {
     --calcite-color-brand: var(--color-one);
     --calcite-color-brand-hover: var(--color-two);
     --calcite-color-brand-press: var(--color-two);
