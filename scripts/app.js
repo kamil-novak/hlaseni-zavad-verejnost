@@ -429,9 +429,7 @@ require([
           categoryCardEl.append(categoryImage);
           categoryCardEl.append(categoryTitle);
           categoryCardEl.addEventListener("click", () => {
-            problemFormCategory.querySelectorAll("calcite-card").forEach((card) => {
-              card.removeAttribute("selected");
-            })
+            resetAllCardSelection();
             selectCategory(categoryCardEl, category);
             setState("category", category.code);
           })
@@ -647,6 +645,12 @@ require([
       categoryCardEl.setAttribute("selected", "");
     }
 
+    let resetAllCardSelection = () => {
+      problemFormCategory.querySelectorAll("calcite-card").forEach((card) => {
+        card.removeAttribute("selected");
+      })
+    }
+
     // Attachment
     // Remove attachement
     const removeAttachment = () => {
@@ -686,6 +690,15 @@ require([
     }
     let removeLoadingScreenOverForm = () => {
       problemLoading.style.display = "none";
+    }
+
+    // Reset form inputs
+    let resetForm = () => {
+      resetAllCardSelection();
+      document.querySelectorAll(".problem-input").forEach((input) => {
+        input.value = null;
+      });
+      attachmentFormEl.reset();
     }
     
     // BUSINESS - MAIN
@@ -765,8 +778,8 @@ require([
     }
 
     let resetApp = () => {
-      console.log("TODO: reset state");
-      console.log("TODO: reset form input");
+      resetState();
+      resetForm();
       console.log("TODO: close form");
       console.log("TODO: close window");
       console.log("TODO: success message");
@@ -777,6 +790,13 @@ require([
       formState[type] = value;
       validateSendButton();
       console.log(`State update - ${type}: `, formState);
+    }
+
+    let resetState = () => {
+      for(var props in formState) {
+        formState[props] = null
+      }
+      console.log(`State reset: `, formState);
     }
 
     // BUSINESS - OTHER
