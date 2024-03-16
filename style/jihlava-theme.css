@@ -298,7 +298,8 @@ body,
     overflow-y: scroll;
     position: relative;
 }
-.problem-loading {
+.problem-loading, 
+.problem-result-screen {
     position: fixed;
     right: 0px;
     top: 45px;
@@ -317,6 +318,10 @@ body,
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
 }
 .problem-loading .spinner div {
     border: 0.5em solid var(--color-one);
@@ -325,6 +330,9 @@ body,
 #problems-form-container.mobile-layout, 
 .problem-loading.mobile-layout {
     width: 100%;
+}
+.problem-result-screen {
+    background-color: var(--color-three);
 }
 .problems-form {
     padding-top: var(--problem-element-padding-top);

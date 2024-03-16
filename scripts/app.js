@@ -65,7 +65,7 @@ require([
     const messageInitialFormDescription = "Popis závady nevložen.";
     const messageInitialFormEmail = "e-mail nevložen.";
     const messageInitialFormAttachment = "Fotografie nepřipojena.";
-    
+    const problemSendedSuccess = `Závada byla vložena. Děkujeme.`
 
     // PROBLEM WINDOW
     // Container
@@ -158,6 +158,7 @@ require([
     let problemLoading = document.querySelector(".problem-loading");
     let problemFormCloseBtn = document.querySelector("#problems-form-container .problems-close");
     let problemSendBtn = document.querySelector("#problems-form-container .problems-footer calcite-button");
+    let problemResultScreen = document.querySelector(".problem-result-screen");
     // Form
     let problemFormCategory = document.querySelector("#problems-form-container .problem-category");
     let problemFormDescription = document.querySelector("#problems-form-container .problem-description");
@@ -521,15 +522,23 @@ require([
                 outFields: ["*"]
               }).then((result) => {
                 EditLayer.addAttachment(result.features[0], formState.attachment).then((result) => {
-                  removeLoadingScreenOverForm();
-                  resetApp();
+                  setTimeout(() => {
+                    removeLoadingScreenOverForm();
+                    resetApp();
+                    addResultScreenOverForm(problemSendedSuccess);
+                    setTimeout(() => {
+                      console.log("zavřít");
+                    }, 1000)
+                  }, 1000)
+
+                  
                 })
               })
             })
             .catch((error) => {
-              console.log(error);
               removeLoadingScreenOverForm();
               resetApp();
+              addResultScreenOverForm("TODO");
             })
         })
 
@@ -699,6 +708,16 @@ require([
     }
     let removeLoadingScreenOverForm = () => {
       problemLoading.style.display = "none";
+    }
+
+    // Result screen over form
+    let addResultScreenOverForm = (message) => {
+      problemResultScreen.style.display = "block";
+      problemResultScreen.innerHTML = problemSendedSuccess;
+    }
+    let removeResultScreenOverForm = () => {
+      problemResultScreen.style.display = "none";
+      problemResultScreen.innerHTML = null;
     }
 
     // Reset form inputs
