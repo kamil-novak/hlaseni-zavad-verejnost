@@ -74,7 +74,7 @@ require([
           Závada byla vložena. Děkujeme.
         </div>
         <div class="form-result-btn">
-          <calcite-button icon-start="caret-right">Pokračovat</calcite-button>
+          <calcite-button scale="l" icon-start="caret-right">Pokračovat</calcite-button>
         </div>
       </div>`
     const problemSendedError = `
@@ -86,7 +86,7 @@ require([
         Závada se nepodařilo vložit. Za komplikace se omlouváme.
       </div>
       <div class="form-result-btn">
-        <calcite-button icon-start="caret-right">Pokračovat</calcite-button>
+        <calcite-button scale="l" icon-start="caret-right">Pokračovat</calcite-button>
       </div>
     </div>`
       
