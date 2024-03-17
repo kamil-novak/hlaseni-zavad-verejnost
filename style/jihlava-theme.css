@@ -10,6 +10,8 @@
     --color-four: #666666;
     --color-five: #D3D3D3;
     --color-six: #151515;
+    /* Problem panel width on desktop */
+    --panel-width: 500px;
     /* Others */
     --title-bar-height: 45px;
     --problem-element-padding-top: 10px;
@@ -293,7 +295,7 @@ body,
     font-size: var(--font-size-one);
     padding: 20px 15px;
     background-color: white;
-    width: 500px;
+    width: var(--panel-width);
     height: 100%;
     z-index: 2;
     overflow-y: scroll;
@@ -305,7 +307,7 @@ body,
     right: 0px;
     top: 45px;
     height: 100%;
-    width: 500px;
+    width: var(--panel-width);
     z-index: 3;
     background-color: rgba(255,255,255,.8);
 }
