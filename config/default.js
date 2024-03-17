@@ -15,16 +15,20 @@ var config = {
     // ID webové mapy
     webmapId: "6eab4160ae6a40be8baf4aa7dfe04b15",
 
-    // Služba pro editaci (vrstva)
+    // URL služby pro editaci ( resp. vrstva ve formátu https://...FeatureServer/IDvrstvy )
     editFeatureUrl: "https://gis.jihlava-city.cz/server1/rest/services/verejnost/verejnost_hlaseni_zavad/FeatureServer/0",
 
-    // Souřadnicový systém webov mapy
+    // Souřadnicový systém webov mapy ( kód EPSG )
     webmapSpatialReference: 5514,
 
     // Portal URL
     portalUrl: "https://gis.jihlava-city.cz/portal",
 
-    // Typ závady
+    // Typ závady 
+    // name = libovolný název, který se objeví ve formuláři
+    // code = kód domény v geodatabázi; 
+    // image = cesta na thumbnail, který se objeví ve formuláři (cesta na soubor nebo URL obrázku)
+    // *ideální je použití vektorového obrázku (SVG)
     problemTyp: [
         {
             name: "Odpady",
@@ -59,5 +63,5 @@ var config = {
     ],
  
     // Obsah widgetu o aplikaci (HTML)
-    infoWidgetContent: "<div class='about-widget'><h3>Hlášení závad ve městě</h3><div><h4>Obsah mapové aplikace</h4> <p><span class='info-h5'>Lorem ipsum reprehenderit non officia nulla elit id. Officia laboris ipsum deserunt nostrud consequat incididunt qui tempor cillum veniam exercitation consectetur veniam. Reprehenderit elit laboris eiusmod nostrud commodo aliquip ipsum irure laborum qui reprehenderit id. Sint Lorem velit sunt cupidatat ipsum quis quis consectetur Lorem deserunt deserunt proident nucalcitella esse.</p></div></div>",
+    infoWidgetContent: "<div class='about-widget'><h3>Hlášení závad ve městě</h3><div><h4>Obsah mapové aplikace</h4><p>Lorem ipsum reprehenderit non officia nulla elit id. Officia laboris ipsum deserunt nostrud consequat incididunt qui tempor cillum veniam exercitation consectetur veniam. Reprehenderit elit laboris eiusmod nostrud commodo aliquip ipsum irure laborum qui reprehenderit id. Sint Lorem velit sunt cupidatat ipsum quis quis consectetur Lorem deserunt deserunt proident nucalcitella esse.</p></div></div>",
 };
