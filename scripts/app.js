@@ -134,7 +134,7 @@ require([
     problemWindowCloseBtn.setAttribute("title", "Zavřít");
     problemWindowCloseBtn.setAttribute("text-label", "Zavřít");
     problemWindowCloseBtn.addEventListener("click", () => {
-      closeAddProblemToMapWindow();
+      resetApp();
     });
     problemWindowHeader.append(problemWindowCloseBtn);
 
@@ -769,8 +769,6 @@ require([
       setValidationMessage(problemFormDescription, "invalid", "information", messageInitialFormDescription);
       setValidationMessage(problemFormEmail, "invalid", "information", messageInitialFormEmail);
       setValidationMessage(problemFormAttachment, "invalid", "information", messageInitialFormAttachment);
-
-      closeAddProblemToMapWindow();
     }
     
     // BUSINESS - MAIN
@@ -849,6 +847,7 @@ require([
     let resetApp = () => {
       resetState();
       resetForm();
+      closeAddProblemToMapWindow();
     }
 
     // Set state
