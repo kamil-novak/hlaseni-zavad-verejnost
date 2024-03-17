@@ -357,6 +357,9 @@ body,
     --calcite-card-accent-color-selected: var(--color-one);
 }
 /* Attachment */
+#attachmentForm calcite-input-message {
+    word-break: break-all;
+}
 #attachmentRemove {
     margin-top: 5px;
 } 
