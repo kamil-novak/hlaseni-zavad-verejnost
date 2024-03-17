@@ -642,7 +642,7 @@ require([
           ([interacting]) => {
             if(sketchingState === true) {
               if (interacting ===  true) {
-                resetSketchViewModel();
+                sketchViewModel.cancel();
               } 
               else {
                 activateSketchingToMap();
@@ -779,8 +779,7 @@ require([
     let resetSketchViewModel = () => {
       changeMessageInProblemToMapWindow(messageSelectPlace, problemWindowLocateBtn); 
       sketchLayer.graphics.removeAll(); // Remove graphic from map
-      if (sketchViewModel) { sketchViewModel.cancel(); } // Reset sketchViewModel
-
+      sketchViewModel.cancel();
       setState("geometry", null);
     }
 
@@ -794,16 +793,14 @@ require([
       moveLocateGraphicUnderSketch()
       // Events
       sketchViewModel.on("create", function(e) {
-        console.log(e.state);
         if(e.state === "complete") {
+          sketchLayer.graphics.removeAll();
+          sketchLayer.graphics.add(e.graphic);
           changeMessageInProblemToMapWindow(messageSelectPlaceSuccess, problemActionBar); 
           
           setState("geometry", e.graphic);
+          activateSketchingToMap();
         }
-      });
-      sketchViewModel.on("update", function(e) {
-
-        setState("geometry", e.graphics[0]);
       });
     }
 
