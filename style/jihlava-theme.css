@@ -349,7 +349,6 @@ body,
 .problems-form calcite-input-message {
     --calcite-input-message-spacing-value: 10px;
 }
-
 /* Category */
 .problems-form .problem-category calcite-card {
     width: 30%;
@@ -363,7 +362,6 @@ body,
 #attachmentRemove {
     margin-top: 5px;
 } 
-
 /* Form result */
 .form-result-container {
     height: 100%;
@@ -431,7 +429,7 @@ body,
         top: 45px !important;
     }
 }
-/* Zakázání :hove na mobilních zařízeních */
+/* Disable :hover on mobile device */
 @media (hover:none), (hover:on-demand) {
     .esri-popup__header-container--button:hover {
         background-color: transparent;
@@ -440,7 +438,7 @@ body,
         background-color: transparent;
     }
 }
-/* Zakázání outline na různých místech aplikace */
+/* Disable outline in many app places */
 :focus, :focus-within, :focus::after {
     outline: none !important;
     outline-offset: 0px !important;
