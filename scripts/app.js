@@ -552,7 +552,7 @@ require([
                   setTimeout(() => {
                     removeLoadingScreenOverForm();
                     resetApp();
-                    addResultScreenOverForm(problemSendedSuccess);
+                    addResultScreenOverForm();
                   }, 1000)
 
                   
@@ -563,7 +563,7 @@ require([
               setTimeout(() => {
                 removeLoadingScreenOverForm();
                 resetApp();
-                addResultScreenOverForm(problemSendedError);
+                addResultScreenOverForm();
               }, 1000)
             })
         })
@@ -645,7 +645,9 @@ require([
                 sketchViewModel.cancel();
               } 
               else {
-                activateSketchingToMap();
+                if (! formState.geometry) {
+                  activateSketchingToMap(); // OPTION: just click for geometry update
+                }
               }
             }
           }
@@ -746,7 +748,7 @@ require([
     }
 
     // Result screen over form
-    let addResultScreenOverForm = (message) => {
+    let addResultScreenOverForm = () => {
       problemResultScreen.style.display = "block";
       problemResultScreen.innerHTML = problemSendedSuccess;
     }
@@ -795,9 +797,9 @@ require([
           sketchLayer.graphics.removeAll();
           sketchLayer.graphics.add(e.graphic);
           changeMessageInProblemToMapWindow(messageSelectPlaceSuccess, problemActionBar); 
-          
+
           setState("geometry", e.graphic);
-          activateSketchingToMap();
+          //activateSketchingToMap(); OPTION: just click for geometry update
         }
       });
     }
