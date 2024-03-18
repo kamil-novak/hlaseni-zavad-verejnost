@@ -793,14 +793,17 @@ require([
       moveLocateGraphicUnderSketch()
       // Events
       sketchViewModel.on("create", function(e) {
+        sketchLayer.graphics.removeAll();
         if(e.state === "complete") {
-          sketchLayer.graphics.removeAll();
           sketchLayer.graphics.add(e.graphic);
           changeMessageInProblemToMapWindow(messageSelectPlaceSuccess, problemActionBar); 
 
           setState("geometry", e.graphic);
           //activateSketchingToMap(); OPTION: just click for geometry update
         }
+      });
+      sketchViewModel.on("update", function(e) {
+        setState("geometry", e.graphics[0]);
       });
     }
 
