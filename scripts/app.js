@@ -638,10 +638,10 @@ require([
         ); 
 
         // Disable sketching when map pan
-        reactiveUtils.watch(function() { return([view.interacting]) }, 
-          ([interacting]) => {
+        reactiveUtils.watch(function() { return([view.navigating]) }, 
+          ([navigating]) => {
             if(sketchingState === true) {
-              if (interacting ===  true) {
+              if (navigating ===  true) {
                 sketchViewModel.cancel();
               } 
               else {
