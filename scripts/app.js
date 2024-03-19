@@ -219,8 +219,8 @@ require([
     // Světlá
     const BaseMap_1 = new Basemap({
       baseLayers: [
-        new TileLayer({
-          url: "https://gis.jihlava-city.cz/server/rest/services/basemaps/ORP_zabaged_seda/MapServer",
+        new MapImageLayer({
+          url: "https://gis.jihlava-city.cz/server/rest/services/basemaps/zabaged_seda_dynamic/MapServer",
           opacity: 0.9999,
           title: "Základní mapa - světlá"
         })
@@ -279,6 +279,10 @@ require([
         xmax: -668422.3442508945,
         ymax: -1128306.586813356,
         spatialReference: config.webmapSpatialReference
+      },
+      constraints: {
+        minScale: 500000,
+        maxScale: 25
       }
     });
 
