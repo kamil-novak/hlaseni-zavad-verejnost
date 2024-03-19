@@ -228,7 +228,7 @@ require([
       title: "Základní mapa - světlá",
       thumbnailUrl: "images/bm-zakladni-svetla.png"
     });
-    // Světlá
+    // Zabaged
     const BaseMap_2 = new Basemap({
       baseLayers: [
         new TileLayer({
@@ -245,7 +245,8 @@ require([
     // Base layer
     const SearchLayerDefault = new FeatureLayer({
       url: "https://gis.jihlava-city.cz/server/rest/services/ost/ORP_RUIAN/MapServer/0",
-      outFields: ["adresa, adresa_o"]
+      outFields: ["adresa, adresa_o"],
+      definitionExpression: "obec_kod=586846"
     })
 
     // WebMap
