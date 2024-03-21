@@ -488,9 +488,8 @@ require([
         })
         setValidationMessage(problemFormDescription, "invalid", "information", messageInitialFormDescription);
         // Email
-        if (localStorage.getItem("hlaseni_zavad_email")) {
-          problemFormEmail.querySelector("calcite-input").value = localStorage.getItem("hlaseni_zavad_email");
-        };
+        setValidationMessage(problemFormEmail, "invalid", "information", messageInitialFormEmail);
+        addEmailFromLocalStorage();
         problemFormEmail.querySelector("calcite-input").addEventListener("calciteInputInput", (e) => {
           if (e.target.value.length > 0) {
             if(validateEmail(e.target.value)) {
@@ -507,7 +506,6 @@ require([
             setState("email", null);
           }  
         })
-        setValidationMessage(problemFormEmail, "invalid", "information", messageInitialFormEmail);
         // Attachment
         addAttachmentBtn.addEventListener("click", () => {
           attachmentInputEl.click();
@@ -517,8 +515,8 @@ require([
             let file = e.target.files[0];
             let fileType = file.type.split("/")[0]
             if (fileType === "image") {
-                setState("attachment", attachmentFormEl);
-                afterAttachmentLoaded(file);
+              setState("attachment", attachmentFormEl);
+               afterAttachmentLoaded(file);
             }
             else {
               setState("attachment", null);
@@ -860,6 +858,7 @@ require([
       resetState();
       resetForm();
       closeAddProblemToMapWindow();
+      addEmailFromLocalStorage();  
     }
 
     // Set state
@@ -874,6 +873,15 @@ require([
         formState[props] = null
       }
       console.log(`State reset: `, formState);
+    }
+
+    let addEmailFromLocalStorage = () => {
+      if (localStorage.getItem("hlaseni_zavad_email")) {
+        let localSotarageEmail = localStorage.getItem("hlaseni_zavad_email");
+        problemFormEmail.querySelector("calcite-input").value = localSotarageEmail;
+        setValidationMessage(problemFormEmail, "valid", "check", "e-mail vložen.");
+        setState("email", localSotarageEmail)
+      };
     }
 
     // BUSINESS - OTHER
@@ -909,4 +917,81 @@ require([
         return(Math.floor(size/1000000) + ' MB');  
       }
     } 
+
+    // RESIZE ATTACHMENT - TODO
+    // Process file
+    let processFile = async (file) => {
+      
+      if( !( /image/i ).test( file.type ) ) {
+          return false;
+      }
+
+      // read the files
+      let reader = new FileReader();
+      reader.readAsArrayBuffer(file);
+
+      let newform = document.createElement("form");
+      let newinput = document.createElement("input");
+      
+      reader.onload = function (event) {
+
+        // Blob stuff
+        let blob = new Blob([event.target.result]); // create blob...
+        window.URL = window.URL || window.webkitURL;
+        let blobURL = window.URL.createObjectURL(blob); // and get it's URL
+        
+        // Helper Image object
+        let image = new Image();
+        image.src = blobURL;
+
+        image.onload = function() {
+          // have to wait till it's loaded
+          let resized = resizeMe(image); // send it to canvas
+                  
+          newinput.setAttribute("type", "file"); // put result from canvas into new hidden input
+          newinput.setAttribute("name", "attachment"); // put result from canvas into new hidden input
+          newinput.setAttribute("accept", "image/*"); // put result from canvas into new hidden input
+          newinput.setAttribute("value", resized); // put result from canvas into new hidden input
+          newform.append(newinput);
+          console.log(newform);
+          setState("attachment", newform);
+        }
+      }
+    }
+
+    // Resize
+    let resizeMe = (img) => {
+
+      max_width = 320;
+      max_height = 240;
+
+      let canvas = document.createElement('canvas');
+
+      let width = img.width;
+      let height = img.height;
+
+      // calculate the width and height, constraining the proportions
+      if (width > height) {
+        if (width > max_width) {
+          //height *= max_width / width;
+          height = Math.round(height *= max_width / width);
+          width = max_width;
+        }
+      } 
+      else {
+        if (height > max_height) {
+          //width *= max_height / height;
+          width = Math.round(width *= max_height / height);
+          height = max_height;
+        }
+      }
+
+      // resize the canvas and draw the image data into it
+      canvas.width = width;
+      canvas.height = height;
+      let ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0, width, height);
+
+      return canvas.toDataURL("image/jpeg",0.7); // get the data from canvas as 70% JPG (can be also PNG, etc.)
+    }
 });
