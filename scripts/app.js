@@ -488,6 +488,9 @@ require([
         })
         setValidationMessage(problemFormDescription, "invalid", "information", messageInitialFormDescription);
         // Email
+        if (localStorage.getItem("hlaseni_zavad_email")) {
+          problemFormEmail.querySelector("calcite-input").value = localStorage.getItem("hlaseni_zavad_email");
+        };
         problemFormEmail.querySelector("calcite-input").addEventListener("calciteInputInput", (e) => {
           if (e.target.value.length > 0) {
             if(validateEmail(e.target.value)) {
@@ -542,6 +545,7 @@ require([
         });
         // Send form
         problemSendBtn.addEventListener("click", () => {
+          localStorage.setItem("hlaseni_zavad_email", formState.email);
           let featureForSend = createFeatureForSend();
           addLoadingScreenOverForm();
           EditLayer.applyEdits( {addFeatures: [featureForSend]} )
