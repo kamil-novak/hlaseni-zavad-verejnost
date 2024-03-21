@@ -35,7 +35,7 @@ var config = {
             code: "odpady",
             image: "images/category_odpady.svg"
         },
-        {
+        /* {
             name: "Zeleň",
             code: "zeleň",
             image: "images/category_zelen.svg"
@@ -44,7 +44,7 @@ var config = {
             name: "Poškozené věci",
             code: "poškozené věci",
             image: "images/category_poskozene_veci.svg"
-        },
+        }, */
         {
             name: "Osvětlení",
             code: "osvětlení",

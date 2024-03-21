@@ -218,25 +218,23 @@ require([
     });
     // Světlá
     const BaseMap_1 = new Basemap({
-      baseLayers: [
-        new MapImageLayer({
-          url: "https://gis.jihlava-city.cz/server/rest/services/basemaps/zabaged_seda_dynamic/MapServer",
-          opacity: 0.9999,
-          title: "Základní mapa - světlá"
-        })
-      ],
+      portalItem: {
+        id: "4e61460704134188abf1dc3bca76cea6",
+        portal: {
+          url: "https://gis.jihlava-city.cz/portal"
+        },
+      },
       title: "Základní mapa - světlá",
       thumbnailUrl: "images/bm-zakladni-svetla.png"
     });
     // Zabaged
     const BaseMap_2 = new Basemap({
-      baseLayers: [
-        new TileLayer({
-          url: "https://gis.jihlava-city.cz/server/rest/services/basemaps/ORP_zabaged/MapServer",
-          opacity: 0.9999,
-          title: "Základní mapa"
-        })
-      ],
+      portalItem: {
+        id: "8b5c0e7b0e4c4fdb8ee107c1e7ecd0e9",
+        portal: {
+          url: "https://gis.jihlava-city.cz/portal"
+        }
+      },
       title: "Základní mapa",
       thumbnailUrl: "images/bm-zakladni.png"
     });
