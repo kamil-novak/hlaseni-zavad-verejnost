@@ -515,8 +515,7 @@ require([
             let file = e.target.files[0];
             let fileType = file.type.split("/")[0]
             if (fileType === "image") {
-              setState("attachment", attachmentFormEl);
-               afterAttachmentLoaded(file);
+              processAttachmentFile(file);
             }
             else {
               setState("attachment", null);
@@ -910,7 +909,7 @@ require([
 
     // Format file size
     let formatFileSize = (size) => {
-      if(size < 1000000){
+      if (size < 1000000){
         return(Math.floor(size/1000) + ' kB');
       }
       else {
@@ -918,15 +917,15 @@ require([
       }
     } 
 
-    // RESIZE ATTACHMENT - TODO
-    // Process file
-    let processFile = async (file) => {
+    // Resize attachment
+    // Process attachment file
+    let processAttachmentFile = async (file) => {
       
       if( !( /image/i ).test( file.type ) ) {
           return false;
       }
 
-      // read the files
+      // Read the files
       let reader = new FileReader();
       reader.readAsArrayBuffer(file);
 
@@ -945,53 +944,70 @@ require([
         image.src = blobURL;
 
         image.onload = function() {
-          // have to wait till it's loaded
-          let resized = resizeMe(image); // send it to canvas
-                  
-          newinput.setAttribute("type", "file"); // put result from canvas into new hidden input
-          newinput.setAttribute("name", "attachment"); // put result from canvas into new hidden input
-          newinput.setAttribute("accept", "image/*"); // put result from canvas into new hidden input
-          newinput.setAttribute("value", resized); // put result from canvas into new hidden input
-          newform.append(newinput);
-          console.log(newform);
-          setState("attachment", newform);
+          // Have to wait till it's loaded
+          // Send it to canvas
+          let resized = resizeImage(image); 
+
+          // Convert the canvas content to a Blob
+          resized.toBlob((blob) => {
+
+            // Create a new File from the Blob
+            let resizedFile = new File([blob], file.name, { type: 'image/jpeg' });
+            let container = new DataTransfer();
+            container.items.add(resizedFile);
+                    
+            // Create new virtual form
+            newinput.setAttribute("type", "file"); 
+            newinput.setAttribute("name", "attachment"); 
+            newinput.setAttribute("accept", "image/*");
+            newinput.files = container.files;
+            newform.append(newinput);
+
+            afterAttachmentLoaded(resizedFile);
+
+            // Set virtual form to state
+            setState("attachment", newform);
+
+          }, 'image/jpeg', config.attachments.quality); 
         }
       }
     }
 
-    // Resize
-    let resizeMe = (img) => {
+    // Resize attachment file
+    let resizeImage = (img) => {
 
-      max_width = 320;
-      max_height = 240;
+      let max_width = config.attachments.maxWidth;
+      let max_height = config.attachments.maxHeight;
 
       let canvas = document.createElement('canvas');
 
       let width = img.width;
       let height = img.height;
 
-      // calculate the width and height, constraining the proportions
+      // Calculate the width and height, constraining the proportions
       if (width > height) {
         if (width > max_width) {
-          //height *= max_width / width;
+
           height = Math.round(height *= max_width / width);
           width = max_width;
+
         }
       } 
       else {
         if (height > max_height) {
-          //width *= max_height / height;
+
           width = Math.round(width *= max_height / height);
           height = max_height;
+
         }
       }
 
-      // resize the canvas and draw the image data into it
+      // Resize the canvas and draw the image data into it
       canvas.width = width;
       canvas.height = height;
       let ctx = canvas.getContext("2d");
       ctx.drawImage(img, 0, 0, width, height);
 
-      return canvas.toDataURL("image/jpeg",0.7); // get the data from canvas as 70% JPG (can be also PNG, etc.)
+      return canvas;
     }
 });

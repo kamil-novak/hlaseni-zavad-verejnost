@@ -64,4 +64,13 @@ var config = {
  
     // Obsah widgetu o aplikaci (HTML)
     infoWidgetContent: "<div class='about-widget'><h3>Hlášení závad ve městě</h3><div><h4>Obsah mapové aplikace</h4><p>Lorem ipsum reprehenderit non officia nulla elit id. Officia laboris ipsum deserunt nostrud consequat incididunt qui tempor cillum veniam exercitation consectetur veniam. Reprehenderit elit laboris eiusmod nostrud commodo aliquip ipsum irure laborum qui reprehenderit id. Sint Lorem velit sunt cupidatat ipsum quis quis consectetur Lorem deserunt deserunt proident nucalcitella esse.</p></div></div>",
+
+    // Maximální rozměry a kvalita přílohy
+    // quality = zadávat v rozmezí 0-1 (např. 0.75)
+    // U rozměrů se zohledňuje, zda je obrázek na šířku nebo na výšku
+    attachments: {
+        maxWidth: 1920,
+        maxHeight: 1080,
+        quality: 0.7
+    }
 };
