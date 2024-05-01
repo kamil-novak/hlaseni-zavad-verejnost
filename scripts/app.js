@@ -83,7 +83,7 @@ require([
         <img src="images/form-error.svg">
       </div>
       <div class="form-result-text">
-        Závada se nepodařilo vložit. Za komplikace se omlouváme.
+        Závadu se nepodařilo vložit. Za komplikace se omlouváme.
       </div>
       <div class="form-result-btn">
         <calcite-button scale="l" icon-start="caret-right" class="form-result-calcite-btn">Pokračovat</calcite-button>
@@ -318,6 +318,7 @@ require([
     let OperationalLayer_1 = null; // Závady - view
     let OperationalLayer_2 = null; // Katastrální území
     let OperationalLayer_3 = null; // Ulice
+    let OperationalLayer_4 = null; // Právě vložené závady
 
     // MAIN CODE
     // After view is loaded    
@@ -335,6 +336,7 @@ require([
         map.findLayerById("18e02e538d9-layer-7").loadAll().then((layer) => {
           OperationalLayer_3 = layer.findSublayerById(3); 
         });
+        OperationalLayer_4 = map.findLayerById("HlaseniZavad_4316");
 
         // Locate layer
         view.map.add(locateLayer);
@@ -552,27 +554,49 @@ require([
                 where: `globalid='${featureId}'`,
                 outFields: ["*"]
               }).then((result) => {
-                EditLayer.addAttachment(result.features[0], formState.attachment).then((result) => {
+                let featureForUpdate = result.features[0];
+                featureForUpdate.attributes.priloha = "ano";
+                EditLayer.addAttachment(result.features[0], formState.attachment).then(() => {
+                    EditLayer.applyEdits( {updateFeatures: [featureForUpdate]} ).then(() => {
+                      setTimeout(() => {
+                        removeLoadingScreenOverForm();
+                        resetApp();
+                        addResultScreenOverForm("success");
+                      }, 1000)
+                    })
+                    .catch((error) => {
+                      setTimeout(() => {
+                        removeLoadingScreenOverForm();
+                        resetApp();
+                        addResultScreenOverForm("error");
+                        console.log(error);
+                      }, 1000)
+                    })
+                  
+                })
+                .catch((error) => {
                   setTimeout(() => {
                     removeLoadingScreenOverForm();
                     resetApp();
-                    addResultScreenOverForm();
+                    addResultScreenOverForm("error");
+                    console.log(error);
                   }, 1000)
-
-                  
                 })
+              
               })
             })
             .catch((error) => {
               setTimeout(() => {
                 removeLoadingScreenOverForm();
                 resetApp();
-                addResultScreenOverForm();
+                addResultScreenOverForm("error");
+                console.log(error);
               }, 1000)
             })
         })
         problemResultScreen.addEventListener("click", (e) => {
           if(e.target.classList.contains("form-result-calcite-btn")) {
+            refreshMapLayer(OperationalLayer_4);
             removeResultScreenOverForm();
             closeProblemFormContainer();
           }
@@ -752,9 +776,14 @@ require([
     }
 
     // Result screen over form
-    let addResultScreenOverForm = () => {
+    let addResultScreenOverForm = (type) => {
       problemResultScreen.style.display = "block";
-      problemResultScreen.innerHTML = problemSendedSuccess;
+      if ( type === "success" ) {
+        problemResultScreen.innerHTML = problemSendedSuccess;
+      }
+      if ( type === "error" ) {
+        problemResultScreen.innerHTML = problemSendedError;
+      }
     }
     let removeResultScreenOverForm = () => {
       problemResultScreen.style.display = "none";
@@ -881,6 +910,11 @@ require([
         setValidationMessage(problemFormEmail, "valid", "check", "e-mail vložen.");
         setState("email", localSotarageEmail)
       };
+    }
+
+    // Refresh layer with added feature
+    let refreshMapLayer = (layer) => {
+      layer.refresh();
     }
 
     // BUSINESS - OTHER
