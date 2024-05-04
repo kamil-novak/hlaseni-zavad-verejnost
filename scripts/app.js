@@ -546,20 +546,19 @@ require([
         problemSendBtn.addEventListener("click", () => {
           localStorage.setItem("hlaseni_zavad_email", formState.email);
           let featureForSend = createFeatureForSend();
-          featureForSend.setAttribute("globalid", "24bd32c7-73b9-4720-b429-14991cfdd0f8");
+          featureForSend.setAttribute("globalid", "{3b0931f2-78f6-4799-ae0f-13d26c787775}");
+          featureForSend.setAttribute("priloha", "ne");
           addLoadingScreenOverForm();
           EditLayer.applyEdits({
             addFeatures: [featureForSend], 
             addAttachments: [{
               feature: featureForSend,
               attachment: {
-                globalId: "b1e20d1d-ceb7-41ef-9d73-47576e4e1380",
-                contentType: "application/pdf",
-                name: "Test.pdf",
-                data: "testData"
+                globalId: "{b99a53f2-3b76-4024-97d2-8ceca8b624ae}",
+                data: formState.attachment
               }
             }]
-          }, {globalIdUsed: true, rollbackOnFailureEnabled: false})
+          }, {gdbVersion: "", returnEditMoment: false, globalIdUsed: true, rollbackOnFailureEnabled: false})
             .then((result) => {
 
               setTimeout(() => {
@@ -1019,7 +1018,7 @@ require([
             afterAttachmentLoaded(resizedFile);
 
             // Set virtual form to state
-            setState("attachment", resizedFile);
+            setState("attachment", newinput.files[0]);
 
           }, 'image/jpeg', config.attachments.quality); 
         }
