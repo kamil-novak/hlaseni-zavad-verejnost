@@ -550,6 +550,8 @@ require([
           localStorage.setItem("hlaseni_zavad_email", formState.email);
           // let featureForSend = createFeatureForSend(); It will be used after resolving applyEdits method
           addLoadingScreenOverForm();
+          let featureUuid = "{" + crypto.randomUUID() + "}";
+          let attachUuid = "{" + crypto.randomUUID() + "}";
 
           let requestAdds = [{
             geometry: {
@@ -564,15 +566,15 @@ require([
               typ: formState.category,
               email: formState.email,
               poznamka: formState.description,
-              globalid: "{f472034e-b9a6-4bcc-83c6-580ccd71d143}",
-              priloha: "ne"
+              globalid: featureUuid,
+              priloha: "ano" // Delete after update map service
             }
           }]
 
           let requestAttachments = {
             adds:[{
-              globalId:"{f9e68bf2-bfdc-4921-b917-5b2faee57a4d}",
-              parentGlobalId:"{f472034e-b9a6-4bcc-83c6-580ccd71d143}",
+              globalId: attachUuid,
+              parentGlobalId: featureUuid,
               contentType: formState.attachment.type,
               name: formState.attachment.name,
               data: formState.attachmentData
@@ -592,7 +594,7 @@ require([
           esriRequest(
               EditLayer.url + "/" + EditLayer.layerId + "/applyEdits", 
               {method: "post", body: requestBody}
-            ).then((result) => {
+            ).then(() => {
               setTimeout(() => {
                 removeLoadingScreenOverForm();
                 resetApp();
