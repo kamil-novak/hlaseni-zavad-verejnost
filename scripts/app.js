@@ -35,7 +35,8 @@ require([
       category: null,
       description: null,
       email: null,
-      attachment: null
+      attachment: null,
+      attachmentData: null
     };
 
     // DOM ---
@@ -521,12 +522,14 @@ require([
             }
             else {
               setState("attachment", null);
+              setState("attachmentData", null);
               afterBadFileLoaded();
             }
           }
         })
         removeAttachmentBtn.addEventListener("click", () => {
           setState("attachment", null);
+          setState("attachmentData", null);
           removeAttachment();		
         })
         setValidationMessage(problemFormAttachment, "invalid", "information", messageInitialFormAttachment)
@@ -545,9 +548,7 @@ require([
         // Send form
         problemSendBtn.addEventListener("click", () => {
           localStorage.setItem("hlaseni_zavad_email", formState.email);
-          let featureForSend = createFeatureForSend();
-          featureForSend.setAttribute("globalid", "{27805f82-dbe3-4a0f-a2be-267fe6b58844}");
-          featureForSend.setAttribute("priloha", "ne");
+          // let featureForSend = createFeatureForSend(); It will be used after resolving applyEdits method
           addLoadingScreenOverForm();
 
           let requestAdds = [{
@@ -563,32 +564,22 @@ require([
               typ: formState.category,
               email: formState.email,
               poznamka: formState.description,
-              globalid: "{27805f82-dbe3-4a0f-a2be-267fe6b58844}",
+              globalid: "{f472034e-b9a6-4bcc-83c6-580ccd71d143}",
               priloha: "ne"
             }
           }]
 
-          const toBase64 = async (file) =>
-            new Promise((resolve, reject) => {
-              const reader = new FileReader();
-              reader.readAsDataURL(file);
-              reader.onload = () => resolve(reader.result);
-              reader.onerror = (error) => reject(error);
-            });
-     
-    
-
           let requestAttachments = {
             adds:[{
-              globalId:"{f155b0e5-04a2-46e1-a5e7-de80ebcb70f0}",
-              parentGlobalId:"{27805f82-dbe3-4a0f-a2be-267fe6b58844}",
+              globalId:"{f9e68bf2-bfdc-4921-b917-5b2faee57a4d}",
+              parentGlobalId:"{f472034e-b9a6-4bcc-83c6-580ccd71d143}",
               contentType: formState.attachment.type,
               name: formState.attachment.name,
-              data: toBase64(formState.attachment)}],
+              data: formState.attachmentData
+            }],
             updates:[],
             deletes:[]
           }
-
 
           let requestBody = new FormData();
           requestBody.append("f", "json");
@@ -598,65 +589,15 @@ require([
           requestBody.append("async", "false");
           requestBody.append("adds", JSON.stringify(requestAdds));
           requestBody.append("attachments", JSON.stringify(requestAttachments));
-
-    
-console.log(requestAttachments);
-          esriRequest(EditLayer.url + "/applyEdits", {method: "post", body: requestBody})
-
-
-          /* EditLayer.applyEdits({
-            addFeatures: [featureForSend], 
-            addAttachments: [{
-              feature: featureForSend,
-              attachment: {
-                globalId: "{f155b0e5-04a2-46e1-a5e7-de80ebcb70f0}",
-                data: formState.attachment
-              }
-            }]
-          }, {gdbVersion: "", returnEditMoment: false, globalIdUsed: true, rollbackOnFailureEnabled: false}) */
-            .then((result) => {
-
+          esriRequest(
+              EditLayer.url + "/" + EditLayer.layerId + "/applyEdits", 
+              {method: "post", body: requestBody}
+            ).then((result) => {
               setTimeout(() => {
                 removeLoadingScreenOverForm();
                 resetApp();
                 addResultScreenOverForm("success");
               }, 1000)
-
-              /* let featureId = result.addFeatureResults[0].globalId;
-              EditLayer.queryFeatures({
-                where: `globalid='${featureId}'`,
-                outFields: ["*"]
-              }).then((result) => {
-                let featureForUpdate = result.features[0];
-                featureForUpdate.attributes.priloha = "ano";
-                EditLayer.addAttachment(result.features[0], formState.attachment).then(() => {
-                    EditLayer.applyEdits( {updateFeatures: [featureForUpdate]} ).then(() => {
-                      setTimeout(() => {
-                        removeLoadingScreenOverForm();
-                        resetApp();
-                        addResultScreenOverForm("success");
-                      }, 1000)
-                    })
-                    .catch((error) => {
-                      setTimeout(() => {
-                        removeLoadingScreenOverForm();
-                        resetApp();
-                        addResultScreenOverForm("error");
-                        console.log(error);
-                      }, 1000)
-                    })
-                  
-                })
-                .catch((error) => {
-                  setTimeout(() => {
-                    removeLoadingScreenOverForm();
-                    resetApp();
-                    addResultScreenOverForm("error");
-                    console.log(error);
-                  }, 1000)
-                })
-              
-              }) */
             })
             .catch((error) => {
               setTimeout(() => {
@@ -970,7 +911,7 @@ console.log(requestAttachments);
     }
 
     let resetState = () => {
-      for(var props in formState) {
+      for(let props in formState) {
         formState[props] = null
       }
       console.log(`State reset: `, formState);
@@ -1072,9 +1013,18 @@ console.log(requestAttachments);
 
             afterAttachmentLoaded(resizedFile);
 
+            // Attachment data for custom esriRequest
+            // It can be removed after solving standard applyEdits() method
+            var attachmentData = new FileReader();
+            attachmentData.onload = function(event) {
+                let attachmentDataContent = event.target.result.replace(/^data:image\/[a-z]+;base64,/, "");
+                setState("attachmentData", attachmentDataContent);
+            };
+            attachmentData.readAsDataURL(newinput.files[0]);
+
             // Set virtual form to state
             setState("attachment", newinput.files[0]);
-
+            
           }, 'image/jpeg', config.attachments.quality); 
         }
       }
