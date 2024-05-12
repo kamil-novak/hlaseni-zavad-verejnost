@@ -546,19 +546,74 @@ require([
         problemSendBtn.addEventListener("click", () => {
           localStorage.setItem("hlaseni_zavad_email", formState.email);
           let featureForSend = createFeatureForSend();
-          featureForSend.setAttribute("globalid", "{3b0931f2-78f6-4799-ae0f-13d26c787775}");
+          featureForSend.setAttribute("globalid", "{27805f82-dbe3-4a0f-a2be-267fe6b58844}");
           featureForSend.setAttribute("priloha", "ne");
           addLoadingScreenOverForm();
-          EditLayer.applyEdits({
+
+          let requestAdds = [{
+            geometry: {
+              spatialReference: {
+                latestWkid: formState.geometry.geometry.spatialReference.latestWkid,
+                wkid: formState.geometry.geometry.spatialReference.wkid,
+              },
+              x: formState.geometry.geometry.x,
+              y: formState.geometry.geometry.y,
+            },
+            attributes: {
+              typ: formState.category,
+              email: formState.email,
+              poznamka: formState.description,
+              globalid: "{27805f82-dbe3-4a0f-a2be-267fe6b58844}",
+              priloha: "ne"
+            }
+          }]
+
+          const toBase64 = async (file) =>
+            new Promise((resolve, reject) => {
+              const reader = new FileReader();
+              reader.readAsDataURL(file);
+              reader.onload = () => resolve(reader.result);
+              reader.onerror = (error) => reject(error);
+            });
+     
+    
+
+          let requestAttachments = {
+            adds:[{
+              globalId:"{f155b0e5-04a2-46e1-a5e7-de80ebcb70f0}",
+              parentGlobalId:"{27805f82-dbe3-4a0f-a2be-267fe6b58844}",
+              contentType: formState.attachment.type,
+              name: formState.attachment.name,
+              data: toBase64(formState.attachment)}],
+            updates:[],
+            deletes:[]
+          }
+
+
+          let requestBody = new FormData();
+          requestBody.append("f", "json");
+          requestBody.append("rollbackOnFailure", "false");
+          requestBody.append("useGlobalIds", "true");
+          requestBody.append("returnEditMoment", "false");
+          requestBody.append("async", "false");
+          requestBody.append("adds", JSON.stringify(requestAdds));
+          requestBody.append("attachments", JSON.stringify(requestAttachments));
+
+    
+console.log(requestAttachments);
+          esriRequest(EditLayer.url + "/applyEdits", {method: "post", body: requestBody})
+
+
+          /* EditLayer.applyEdits({
             addFeatures: [featureForSend], 
             addAttachments: [{
               feature: featureForSend,
               attachment: {
-                globalId: "{b99a53f2-3b76-4024-97d2-8ceca8b624ae}",
+                globalId: "{f155b0e5-04a2-46e1-a5e7-de80ebcb70f0}",
                 data: formState.attachment
               }
             }]
-          }, {gdbVersion: "", returnEditMoment: false, globalIdUsed: true, rollbackOnFailureEnabled: false})
+          }, {gdbVersion: "", returnEditMoment: false, globalIdUsed: true, rollbackOnFailureEnabled: false}) */
             .then((result) => {
 
               setTimeout(() => {
