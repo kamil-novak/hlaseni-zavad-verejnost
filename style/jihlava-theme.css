@@ -11,7 +11,7 @@
     --color-five: #D3D3D3;
     --color-six: #151515;
     /* Problem panel width on desktop */
-    --panel-width: 500px;
+    --panel-width: 650px;
     /* Others */
     --title-bar-height: 45px;
     --problem-element-padding-top: 10px;
@@ -353,7 +353,7 @@ body,
 }
 /* Category */
 .problems-form .problem-category calcite-card {
-    width: 30%;
+    width: 23.5%;
     max-width: 160px;
     --calcite-card-accent-color-selected: var(--color-one);
 }
@@ -447,14 +447,14 @@ body,
 }
 
 /* Problems category */
-@media (max-width: 800px) {
+@media (max-width: 650px) {
     .problems-form .problem-category calcite-card {
-        width: calc(100% / 3 - .5rem);
+        width: calc(100% / 4 - .6rem);
     }
 }
 
-@media (max-width: 400px) {
+@media (max-width: 450px) {
     .problems-form .problem-category calcite-card {
-        width: calc(100% / 2 - .5rem);
+        width: calc(100% / 2 - .45rem);
     }
 }
