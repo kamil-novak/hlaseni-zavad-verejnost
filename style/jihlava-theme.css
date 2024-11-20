@@ -46,6 +46,16 @@ body,
     max-height: 100%;
 }
 
+calcite-switch {
+    --calcite-color-brand: var(--color-one);
+    --calcite-color-status-info: #832116;
+    --calcite-color-brand-hover: #DA978F;
+}
+
+.hidden {
+    display: none;
+}
+
 /* LOADING SCREEN */
 #loading-screen {
     position:fixed;

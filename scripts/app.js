@@ -190,6 +190,9 @@ require([
     let problemFormEmail = document.querySelector("#problems-form-container .problem-email");
     // Attachment
     let problemFormAttachment = document.querySelector("#problems-form-container .problem-attachment");
+    let attachmentContainer = document.querySelector(".attachment-container");
+    let attachmentSwitch = document.querySelector("#attachment-switch");
+    let attachmentMessage = document.getElementById("attachment-message");
     let attachmentFormEl = document.getElementById("attachmentForm");
 		let attachmentInputEl = document.getElementById("attachmentInput");
 		let removeAttachmentBtn = document.getElementById("attachmentRemove");
@@ -510,6 +513,23 @@ require([
           }  
         })
         // Attachment
+        attachmentMessage.children[0].innerText = config.attachmentMessage
+        attachmentSwitch.addEventListener("click", () => {
+          if (attachmentSwitch.children[0].hasAttribute("checked")) {
+            attachmentSwitch.removeAttribute("checked")
+            attachmentMessage.classList.remove("hidden")
+            attachmentContainer.classList.add("hidden")
+            setState("attachment", "disabled");
+            setState("attachmentData", "disabled");
+          }
+          else {
+            attachmentSwitch.children[0].setAttribute("checked", "")
+            attachmentMessage.classList.add("hidden")
+            attachmentContainer.classList.remove("hidden")
+            setState("attachment", null);
+            setState("attachmentData", null);
+          }
+        })
         addAttachmentBtn.addEventListener("click", () => {
           attachmentInputEl.click();
         });
@@ -567,20 +587,23 @@ require([
               email: formState.email,
               poznamka: formState.description,
               globalid: featureUuid,
-              priloha: "ano" // Delete after update map service
+              priloha: formState.attachment === "disabled" &&  formState.attachmentData === "disabled" ? "ne" : "ano" // Delete after update map service
             }
           }]
 
-          let requestAttachments = {
-            adds:[{
-              globalId: attachUuid,
-              parentGlobalId: featureUuid,
-              contentType: formState.attachment.type,
-              name: formState.attachment.name,
-              data: formState.attachmentData
-            }],
-            updates:[],
-            deletes:[]
+          let requestAttachments;
+          if (requestAdds[0].attributes.priloha === "ano") {
+            requestAttachments = {
+              adds:[{
+                globalId: attachUuid,
+                parentGlobalId: featureUuid,
+                contentType: formState.attachment.type,
+                name: formState.attachment.name,
+                data: formState.attachmentData
+              }],
+              updates:[],
+              deletes:[]
+            }
           }
 
           let requestBody = new FormData();
@@ -590,7 +613,9 @@ require([
           requestBody.append("returnEditMoment", "false");
           requestBody.append("async", "false");
           requestBody.append("adds", JSON.stringify(requestAdds));
-          requestBody.append("attachments", JSON.stringify(requestAttachments));
+          if (requestAdds[0].attributes.priloha === "ano") {
+            requestBody.append("attachments", JSON.stringify(requestAttachments));
+          }
           esriRequest(
               EditLayer.url + "/" + EditLayer.layerId + "/applyEdits", 
               {method: "post", body: requestBody}
@@ -815,6 +840,10 @@ require([
 
       attachmentFormEl.reset();
       removeAttachment();	
+
+      attachmentSwitch.children[0].setAttribute("checked", "")
+      attachmentMessage.classList.add("hidden")
+      attachmentContainer.classList.remove("hidden")
 
       setValidationMessage(problemFormCategory, "invalid", "information", messageInitialFormCategory)
       setValidationMessage(problemFormDescription, "invalid", "information", messageInitialFormDescription);

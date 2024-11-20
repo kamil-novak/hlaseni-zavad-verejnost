@@ -73,7 +73,13 @@
             <calcite-input-message scale="m">e-mail nevložen.</calcite-input-message>
           </div>
           <div class="problem-form-section problem-attachment">
-            <div class="problem-question">Připojte fotografii závady</div>
+            <calcite-label id="attachment-switch" layout="inline">
+              Připojit fotografii závady
+              <calcite-switch checked></calcite-switch>
+            </calcite-label>
+            <calcite-notice id="attachment-message" class="hidden" open icon="exclamation-mark-triangle" kind="warning" scale="s">
+              <div slot="title"></div>
+            </calcite-notice>
             <div class="attachment-container">
               <form id="attachmentForm">
                 <calcite-button icon-start="camera-plus" id="addAttachmentBtn" scale="l" width="full" kind="neutral">Přidat</calcite-button>
