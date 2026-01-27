@@ -186,6 +186,7 @@ require([
     let problemResultScreen = document.querySelector(".problem-result-screen");
     // Form
     let problemFormCategory = document.querySelector("#problems-form-container .problem-category");
+    let problemFormCategoryAlert = document.getElementById("problem-category-alert");
     let problemFormDescription = document.querySelector("#problems-form-container .problem-description");
     let problemFormEmail = document.querySelector("#problems-form-container .problem-email");
     // Attachment
@@ -471,6 +472,12 @@ require([
             resetAllCardSelection();
             selectCategory(categoryCardEl, category);
             setState("category", category.code);
+            problemFormCategoryAlert.children[0].innerText = null;
+            problemFormCategoryAlert.classList.add("hidden");
+            if (category.alert) {
+              problemFormCategoryAlert.children[0].innerText = config.problemTyp.filter(typ => typ.code === category.code)[0].alert;
+              problemFormCategoryAlert.classList.remove("hidden");
+            }
           })
           problemFormCategory.children[1].append(categoryCardEl);
         })
@@ -841,9 +848,12 @@ require([
       attachmentFormEl.reset();
       removeAttachment();	
 
-      attachmentSwitch.children[0].setAttribute("checked", "")
-      attachmentMessage.classList.add("hidden")
-      attachmentContainer.classList.remove("hidden")
+      attachmentSwitch.children[0].setAttribute("checked", "");
+      attachmentMessage.classList.add("hidden");
+      attachmentContainer.classList.remove("hidden");
+
+      problemFormCategoryAlert.children[0].innerText = null;
+      problemFormCategoryAlert.classList.add("hidden");
 
       setValidationMessage(problemFormCategory, "invalid", "information", messageInitialFormCategory)
       setValidationMessage(problemFormDescription, "invalid", "information", messageInitialFormDescription);

@@ -367,6 +367,9 @@ calcite-switch {
     max-width: 160px;
     --calcite-card-accent-color-selected: var(--color-one);
 }
+.problems-form .problem-category #problem-category-alert {
+    margin-top: 10px;
+}
 /* Attachment */
 #attachmentForm calcite-input-message {
     word-break: break-all;

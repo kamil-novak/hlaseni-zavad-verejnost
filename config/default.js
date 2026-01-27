@@ -33,32 +33,38 @@ var config = {
         {
             name: "Odpady",
             code: "odpady",
-            image: "images/category_odpady.svg"
+            image: "images/category_odpady.svg",
+            alert: "V nutných případech volejte na telefonní číslo ### ### ###."
         },
         /* {
             name: "Zeleň",
             code: "zeleň",
-            image: "images/category_zelen.svg"
+            image: "images/category_zelen.svg",
+            alert: ""
         },
         {
             name: "Poškozené věci",
             code: "poškozené věci",
-            image: "images/category_poskozene_veci.svg"
+            image: "images/category_poskozene_veci.svg",
+            alert: ""
         }, */
         {
             name: "Osvětlení",
             code: "osvětlení",
-            image: "images/category_osvetleni.svg"
+            image: "images/category_osvetleni.svg",
+            alert: ""
         },
         {
             name: "Dětské hřiště",
             code: "dětské hřiště",
-            image: "images/category_detske_hriste.svg"
+            image: "images/category_detske_hriste.svg",
+            alert: ""
         },
         {
             name: "Ostatní",
             code: "ostatní",
-            image: "images/category_ostatni.svg"
+            image: "images/category_ostatni.svg",
+            alert: "Jiný alert"
         }
     ],
 
@@ -66,7 +72,7 @@ var config = {
     attachmentMessage: "Doporučujeme přiložení fotografie pro snadnější určení rozsahu závady.",
  
     // Obsah widgetu o aplikaci (HTML)
-    infoWidgetContent: "<div class='about-widget'><h3>Hlášení závad ve městě</h3><div><h4>Autoři</h4><p><a href='https://jihlava.cz' target='_blank'>Statutární město Jihlava</a><br>odbor informatiky<br>gis@jihlava-city.cz<br>Verze 1.1.0</p></div></div>",
+    infoWidgetContent: "<div class='about-widget'><h3>Hlášení závad ve městě</h3><div><h4>Autoři</h4><p><a href='https://jihlava.cz' target='_blank'>Statutární město Jihlava</a><br>odbor informatiky<br>gis@jihlava-city.cz<br>Verze 1.2.0</p></div></div>",
 
     // Maximální rozměry a kvalita přílohy
     // quality = zadávat v rozmezí 0-1 (např. 0.75)
