@@ -61,6 +61,18 @@ var config = {
             alert: ""
         },
         {
+            name: "Zimní údržba",
+            code: "zimní údržba",
+            image: "images/category_zimni_udrzba.svg",
+            alert: ""
+        },
+        {
+            name: "Nenadálé situace",
+            code: "nenadálé situace",
+            image: "images/category_nenadale_situace.svg",
+            alert: ""
+        },
+        {
             name: "Ostatní",
             code: "ostatní",
             image: "images/category_ostatni.svg",
