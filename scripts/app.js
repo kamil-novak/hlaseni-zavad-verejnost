@@ -23,6 +23,10 @@ require([
     "esri/widgets/Sketch/SketchViewModel"
    ], function(WebMap, MapView, Popup, reactiveUtils, Expand, Home, Locate, LocateVM, LocalBasemapsSource, TileLayer, Basemap, BasemapGallery, Search, FeatureLayer, GraphicsLayer, Graphic, Point, MapImageLayer, esriRequest, Feature, SketchViewModel) {
 
+    // URL PARAMS ---
+    const url = new URL(window.location.href);
+    const urlCategory = url.searchParams.get('code');
+
     // GLOBAL VARIABLES ---
     let sketchViewModel = null;
 
@@ -457,6 +461,7 @@ require([
         });
         // Form
         // Category
+        setValidationMessage(problemFormCategory, "invalid", "information", messageInitialFormCategory)
         config.problemTyp.forEach((category) => {
           let categoryCardEl = document.createElement("calcite-card");
           let categoryImage = document.createElement("img");
@@ -480,8 +485,10 @@ require([
             }
           })
           problemFormCategory.children[1].append(categoryCardEl);
+          if (urlCategory && urlCategory === category.code) {
+            categoryCardEl.click();
+          }
         })
-        setValidationMessage(problemFormCategory, "invalid", "information", messageInitialFormCategory)
         // Description
         problemFormDescription.querySelector("calcite-text-area").addEventListener("calciteTextAreaInput", (e) => {
           let actualTextLength = e.target.value.length;
